@@ -206,7 +206,7 @@ jobs:
   
   build:
     name: Build
-    needs: [create_release, build_doc]
+    needs: [create_release] #, build_doc]
     runs-on: windows-latest
     strategy:
       fail-fast: false
@@ -224,11 +224,11 @@ jobs:
       - name: Checkout Source
         uses: actions/checkout@v2
 
-      - name: Download Documentation
-        uses: actions/download-artifact@v2
-        with:
-          name: vice-pdf
-          path: vice/doc/
+#      - name: Download Documentation
+#        uses: actions/download-artifact@v2
+#        with:
+#          name: vice-pdf
+#          path: vice/doc/
 
       - name: Install GTK3 Dependencies if Applicable
         if: ${{ matrix.ui == 'GTK3' }}
@@ -285,6 +285,7 @@ jobs:
         id: build
         shell: msys2 {0}
         run: |
+          ls -alR
           cd vice
           MINGW_INSTALLS=${{ matrix.arch.msystem }} ../my_build.sh ${{ matrix.ui }}
           echo ::set-output name=zip_path::$(cygpath -w -a vice/*.7z)
