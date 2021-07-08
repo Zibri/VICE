@@ -241,6 +241,7 @@ jobs:
             base-devel
             mingw-w64-${{ matrix.arch.arch }}-toolchain
             zip
+            p7zip
             subversion
             git
             mingw-w64-${{ matrix.arch.arch }}-pkg-config
@@ -265,6 +266,7 @@ jobs:
             base-devel
             mingw-w64-${{ matrix.arch.arch }}-toolchain
             zip
+            p7zip
             subversion
             git
             mingw-w64-${{ matrix.arch.arch }}-pkg-config
