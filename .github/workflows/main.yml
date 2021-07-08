@@ -214,8 +214,8 @@ jobs:
         shell: bash
         run: svn checkout https://svn.code.sf.net/p/vice-emu/code/trunk/vice vice
 
-#      - name: Checkout Source
-#        uses: actions/checkout@v2
+      - name: Checkout Source
+        uses: actions/checkout@v2
 
       - name: Download Documentation
         uses: actions/download-artifact@v2
