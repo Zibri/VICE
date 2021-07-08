@@ -2,7 +2,7 @@ name: Check For Updates
 
 on:
   schedule:
-  - cron: "*/30 * * * *"    # Every 2 hours
+  - cron: "*/30 * * * *"    # Every 30 minutes
 
   workflow_dispatch:
   
@@ -21,12 +21,7 @@ jobs:
           curl -qs "https://github.com/Zibri/VICE/tags"|grep "class.*releases/tag/"|grep -q $revision && exit 0 || (
           curl -v -X POST -d '{"ref":"main"}' -H "Accept: application/vnd.github.v3+json" \
           -H "Authorization: token ${{ secrets.WF }} " \
-          "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/main.yml/dispatches"
-          exit1
+          "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/main.yml/dispatches" || exit 0 && \
+          echo "New revision $revision on SVN!"
           )
-#            curl -X POST -d '{"ref":"main"}' -H "Accept: application/vnd.github.v3+json" \
-#            -H "Authorization: token ${{ secrets.WF }} " \
-#            "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/main.yml/dispatches"
-#          echo New revision ($revision) on SVN!
-#          }
           
