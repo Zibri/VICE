@@ -17,6 +17,6 @@ jobs:
           curl -H "Accept: application/vnd.github.v3+json" \
           -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
           --request POST \
-          --data '{"event_type": "workflow_dispatch"}' \
+          --data '{"event_type": "repository_dispatch"}' \
           https://api.github.com/repos/$GITHUB_REPOSITORY/dispatches
           
