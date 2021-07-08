@@ -139,7 +139,8 @@ jobs:
     steps:
 
       - name: Get revision
-        run: echo ::set-env name=revision::=$(svn info --show-item revision https://svn.code.sf.net/p/vice-emu/code/trunk/vice)
+#        run: echo ::set-env name=revision::=$(svn info --show-item revision https://svn.code.sf.net/p/vice-emu/code/trunk/vice)
+        run: echo "revision::=$(svn info --show-item revision https://svn.code.sf.net/p/vice-emu/code/trunk/vice)" >> $GITHUB_ENV
 
       - name: Create Release
         id: create_release
