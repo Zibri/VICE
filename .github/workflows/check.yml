@@ -18,5 +18,5 @@ jobs:
           -H "Authorization: ${{ secrets.GITHUB_TOKEN }}" \
           --request POST \
           --data '{"event_type": "gooooooo!"}' \
-          https://api.github.com/repos/${{ context.repo.repo }}/dispatches
+          https://api.github.com/repos/Zibri/VICE/dispatches
       
