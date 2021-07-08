@@ -135,17 +135,17 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
-#      release_id: ${{ steps.create_release.outputs.id }}
-      release_id: $(svn info --show-item revision https://svn.code.sf.net/p/vice-emu/code/trunk/vice)
+      release_id: ${{ steps.create_release.outputs.id }}
     steps:
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VVER: $(svn info --show-item revision https://svn.code.sf.net/p/vice-emu/code/trunk/vice)
         with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }} snapshot
+          tag_name: r$VVER
+          release_name: r$VVER snapshot
           draft: true
           prerelease: true
 
@@ -202,7 +202,6 @@ jobs:
       matrix:
         arch:
         - { msystem: MINGW64, arch: x86_64 }
-#        - { msystem: MINGW32, arch: i686 }
         ui: [ GTK3, SDL2 ]
         
     steps:
@@ -304,4 +303,4 @@ jobs:
                 release_id: ${{ needs.create_release.outputs.release_id }},
                 draft: false
               });
-            
+              
