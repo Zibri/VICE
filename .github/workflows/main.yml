@@ -156,7 +156,6 @@ jobs:
     steps:
 
       - name: Get revision
-#        run: echo ::set-env name=revision::=$(svn info --show-item revision https://svn.code.sf.net/p/vice-emu/code/trunk/vice)
         run: |
           echo "revision=$(svn info --show-item revision https://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }})" >> $GITHUB_ENV
 
@@ -171,38 +170,38 @@ jobs:
           draft: true
           prerelease: true
 
-#  build_doc:
-#    name: Test Headless, Build Documentation
-#    needs: create_release
-#    runs-on: ubuntu-20.04
-    
-#    steps:
+  build_doc:
+    name: Test Headless, Build Documentation
+    needs: create_release
+    runs-on: ubuntu-20.04
+   
+    steps:
 
-#      - name: SVN Checkout Source
-#        shell: bash
-#        run: svn checkout https://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }} vice
+      - name: SVN Checkout Source
+        shell: bash
+        run: svn checkout https://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }} vice
 
- #     - name: Install Dependencies
- #       shell: bash
- #       run: |
- #         sudo apt-get install autoconf automake build-essential byacc flex xa65 dos2unix
- #         sudo apt-get install texinfo texlive-fonts-recommended
- #         
- #     - name: Build
- #       id: build
- #       shell: bash
- #       run: |
- #         cd vice
- #         ./autogen.sh
- #         ./configure --enable-headlessui --enable-html-docs --without-pulse --without-alsa --without-png
- #         make -j 6
+      - name: Install Dependencies
+        shell: bash
+        run: |
+          sudo apt-get install autoconf automake build-essential byacc flex xa65 dos2unix
+          sudo apt-get install texinfo texlive-fonts-recommended
+          
+      - name: Build
+        id: build
+        shell: bash
+        run: |
+          cd vice
+          ./autogen.sh
+          ./configure --enable-headlessui --enable-html-docs --without-pulse --without-alsa --without-png
+          make -j 6
 
- #     - name: Upload
- #       uses: actions/upload-artifact@v2
- #       with:
- #         name: vice-pdf
- #         path: vice/doc/vice.pdf
- #         retention-days: 1
+      - name: Upload
+        uses: actions/upload-artifact@v2
+        with:
+          name: vice-pdf
+          path: vice/doc/vice.pdf
+          retention-days: 1
   
   build:
     name: Build
@@ -213,7 +212,7 @@ jobs:
       matrix:
         arch:
         - { msystem: MINGW64, arch: x86_64 }
-        ui: [ GTK3 ] #, SDL2 ]
+        ui: [ GTK3, SDL2 ]
         
     steps:
     
@@ -227,11 +226,11 @@ jobs:
           rm -rf ./vice/build/msys2/github-actions-build.sh
           cp my_build.sh ./vice/build/msys2/github-actions-build.sh
 
-#      - name: Download Documentation
-#        uses: actions/download-artifact@v2
-#        with:
-#          name: vice-pdf
-#          path: vice/doc/
+      - name: Download Documentation
+        uses: actions/download-artifact@v2
+        with:
+          name: vice-pdf
+          path: vice/doc/
 
       - name: Install GTK3 Dependencies if Applicable
         if: ${{ matrix.ui == 'GTK3' }}
