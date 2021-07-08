@@ -14,9 +14,9 @@ jobs:
       - name: Check for updates.
         id: check
         run: |
-          curl -H "Accept: application/vnd.github.v3+json" \ \
+          curl -H "Accept: application/vnd.github.v3+json" \
           -H "Authorization: token ${{ secrets.WF }}" \
           --request POST \
           -d '{"ref":"ref"}' \
-          "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/workflows/main.yaml/dispatches"
+          "https://api.github.com/repos/Zibri/VICE/actions/workflows/main.yaml/dispatches"
           
