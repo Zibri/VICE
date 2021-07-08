@@ -310,8 +310,11 @@ jobs:
     name: Publish Release
     needs: [create_release, build]
     runs-on: ubuntu-latest
+    
     steps:
       - uses: actions/github-script@v3
+        env:
+          rbody: $(svn log -l 1 https://svn.code.sf.net/p/vice-emu/code/trunk/vice)          
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
@@ -319,6 +322,7 @@ jobs:
               {
                 owner: context.repo.owner,
                 repo: context.repo.repo,
+                body: ${{ env.rbody }}
                 release_id: ${{ needs.create_release.outputs.release_id }},
                 draft: false
               });
