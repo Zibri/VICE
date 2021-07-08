@@ -149,7 +149,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: r${{ steps.revision.outputs.number }}
-          release_name: r${{ steps.revision.outputs.number }}
+          release_name: r${{ needs.create_release.steps.revision.outputs.number }}
           draft: true
           prerelease: true
 
@@ -169,6 +169,7 @@ jobs:
         run: |
           sudo apt-get install autoconf automake build-essential byacc flex xa65 dos2unix
           sudo apt-get install texinfo texlive-fonts-recommended
+          exit 999dfhdfhd
           
       - name: Build
         id: build
