@@ -137,15 +137,19 @@ jobs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
       release_id: ${{ steps.create_release.outputs.id }}
     steps:
+
+      - name: Get current date
+        id: revision
+        run: echo "::set-output number=${svn info --show-item revision https://svn.code.sf.net/p/vice-emu/code/trunk/vice}"
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VVER: $(svn info --show-item revision https://svn.code.sf.net/p/vice-emu/code/trunk/vice)
         with:
-          tag_name: r$VVER
-          release_name: r$VVER snapshot
+          tag_name: r${{ steps.revision.outputs.number }}
+          release_name: r${{ steps.revision.outputs.number }}
           draft: true
           prerelease: true
 
