@@ -76,7 +76,8 @@ jobs:
       - name: Check if we need to compile
         run: |
           revision=$(svn info --show-item revision https://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }})
-          curl -qs "https://github.com/Zibri/VICE/tags"|grep "class.*releases/tag/"|grep -q $revision && exit 1
+          curl "https://github.com/Zibri/VICE/tags"|grep "class.*releases/tag/"
+          exit 1
 
       - uses: actions/github-script@v3
         with:
