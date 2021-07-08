@@ -24,5 +24,5 @@ jobs:
             -H "Authorization: token ${{ secrets.WF }} " \
             "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/main.yml/dispatches" || exit 0 && \
             echo New revision ($revision) on SVN!
-          }
+            }
           
