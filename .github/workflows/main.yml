@@ -213,16 +213,19 @@ jobs:
       matrix:
         arch:
         - { msystem: MINGW64, arch: x86_64 }
-        ui: [ GTK3, SDL2 ]
+        ui: [ GTK3 ] #, SDL2 ]
         
     steps:
     
-      - name: SVN Checkout Source
-        shell: bash
-        run: svn checkout https://svn.code.sf.net/p/vice-emu/code/trunk/vice vice
-
       - name: Checkout Source
         uses: actions/checkout@v2
+
+      - name: SVN Checkout Source
+        shell: bash
+        run: | 
+          svn checkout https://svn.code.sf.net/p/vice-emu/code/trunk/vice vice
+          rm -rf ./vice/build/msys2/github-actions-build.sh
+          cp my_build.sh ./vice/build/msys2/github-actions-build.sh
 
 #      - name: Download Documentation
 #        uses: actions/download-artifact@v2
@@ -285,7 +288,7 @@ jobs:
         id: build
         shell: msys2 {0}
         run: |
-          MINGW_INSTALLS=${{ matrix.arch.msystem }} $HOME/my_build.sh ${{ matrix.ui }}
+          MINGW_INSTALLS=${{ matrix.arch.msystem }} ./vice/build/msys2/github-actions-build.sh ${{ matrix.ui }}
           echo ::set-output name=zip_path::$(cygpath -w -a vice/*.7z)
           echo ::set-output name=zip_name::$(basename vice/*.7z)
 
