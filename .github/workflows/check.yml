@@ -17,6 +17,6 @@ jobs:
           curl -H "Accept: application/vnd.github.everest-preview+json" \
           -H "Authorization: ${{ secrets.GITHUB_TOKEN }}" \
           --request POST \
-          --data '{"event_type": "gooooooo!"}' \
+          --data '{"event_type": "workflow_dispatch"}' \
           https://api.github.com/repos/Zibri/VICE/dispatches
       
