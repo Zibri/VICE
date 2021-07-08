@@ -173,7 +173,7 @@ jobs:
 
       - name: SVN Checkout Source
         shell: bash
-        run: svn checkout https://svn.code.sf.net/p/vice-emu/code/trunk/vice@@${{ github.event.inputs.revision }} vice
+        run: svn checkout https://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }} vice
 
       - name: Install Dependencies
         shell: bash
