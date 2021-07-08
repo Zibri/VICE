@@ -274,9 +274,6 @@ jobs:
         shell: msys2 {0}
         run: |
           MINGW_INSTALLS=${{ matrix.arch.msystem }} ./vice/build/msys2/github-actions-build.sh ${{ matrix.ui }}
-          sver="-r${{ needs.create_release.outputs.release_id }})"
-          mv vice/GTK3VICE-???-win64.zip "vice/GTK3VICE-3.5-win64${sver}.zip"
-          mv vice/SDL2VICE-???-win64.zip "vice/SDL2VICE-3.5-win64${sver}.zip"
           echo ::set-output name=zip_path::$(cygpath -w -a vice/*.zip)
           echo ::set-output name=zip_name::$(basename vice/*.zip)
 
