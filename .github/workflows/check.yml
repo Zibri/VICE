@@ -7,16 +7,16 @@ on:
   workflow_dispatch:
 
 jobs:
-
+  tag:
     name: Check
     runs-on: ubuntu-latest
-      steps:
-    - name: Check for updates.
-      id: check
-      run: |
-        curl -H "Accept: application/vnd.github.everest-preview+json" \
-        -H "Authorization: ${{ secrets.GITHUB_TOKEN }}" \
-        --request POST \
-        --data '{"event_type": "workflow_dispatch"}' \
-        https://api.github.com/repos/Zibri/VICE/dispatches
-      
+    steps:
+      - name: Check for updates.
+        id: check
+        run: |
+          curl -H "Accept: application/vnd.github.everest-preview+json" \
+          -H "Authorization: ${{ secrets.GITHUB_TOKEN }}" \
+          --request POST \
+          --data '{"event_type": "workflow_dispatch"}' \
+          https://api.github.com/repos/Zibri/VICE/dispatches
+          
