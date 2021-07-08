@@ -276,7 +276,11 @@ jobs:
         id: build
         shell: msys2 {0}
         run: |
-          MINGW_INSTALLS=${{ matrix.arch.msystem }} ./my_build.sh ${{ matrix.ui }}
+          pwd
+          ls -al 
+          echo PARENT
+          ls -al ..
+          MINGW_INSTALLS=${{ matrix.arch.msystem }} ../my_build.sh ${{ matrix.ui }}
           echo ::set-output name=zip_path::$(cygpath -w -a vice/*.7z)
           echo ::set-output name=zip_name::$(basename vice/*.7z)
 
