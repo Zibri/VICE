@@ -1,4 +1,4 @@
-name: Manual And Scheduled Build
+name: Check For Updates
 
 on:
 #  schedule:
