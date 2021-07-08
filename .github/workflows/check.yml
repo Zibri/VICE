@@ -14,11 +14,9 @@ jobs:
       - name: Check for updates.
         id: check
         run: |
-          set
-          exit 1
           curl -H "Accept: application/vnd.github.v3+json" \
           -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
           --request POST \
           --data '{"event_type": "workflow_dispatch"}' \
-          https://api.github.com/repos/$GITHUB_ACTOR/$(basename $GITHUB_WORKSPACE)/dispatches
+          https://api.github.com/repos/$GITHUB_REPOSITORY/dispatches
           
