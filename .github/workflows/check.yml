@@ -15,7 +15,7 @@ jobs:
         id: check
         run: |
           curl -H "Accept: application/vnd.github.v3+json" \ \
-          -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          -H "Authorization: token ${{ secrets.WF }}" \
           --request POST \
           -d '{"ref":"ref"}' \
           https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/main.yaml/dispatches
