@@ -1,0 +1,9 @@
+name: example-client-payload-action
+on: repository_dispatch
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - run: 'echo "field: ${{ github.event.client_payload.foo }}"'
+      - run: 'echo "payload: ${{ toJson(github.event.client_payload) }}"'
