@@ -2,7 +2,17 @@ name: Manual Build
 
 on:
   workflow_dispatch:
+    inputs:
+      revision:
+        description: 'Revision'
+        required: true
+        default: ''
   repository_dispatch:
+    inputs:
+      revision:
+        description: 'Revision'
+        required: false
+        default: ''
 
 concurrency: 
   group: Snapshot Build
@@ -140,7 +150,8 @@ jobs:
 
       - name: Get revision
 #        run: echo ::set-env name=revision::=$(svn info --show-item revision https://svn.code.sf.net/p/vice-emu/code/trunk/vice)
-        run: echo "revision=$(svn info --show-item revision https://svn.code.sf.net/p/vice-emu/code/trunk/vice)" >> $GITHUB_ENV
+        run: |
+          echo "revision=$(svn info --show-item revision https://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }})" >> $GITHUB_ENV
 
       - name: Create Release
         id: create_release
@@ -162,7 +173,7 @@ jobs:
 
       - name: SVN Checkout Source
         shell: bash
-        run: svn checkout https://svn.code.sf.net/p/vice-emu/code/trunk/vice vice
+        run: svn checkout https://svn.code.sf.net/p/vice-emu/code/trunk/vice@@${{ github.event.inputs.revision }} vice
 
       - name: Install Dependencies
         shell: bash
