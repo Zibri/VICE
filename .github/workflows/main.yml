@@ -138,7 +138,7 @@ jobs:
       release_id: ${{ steps.create_release.outputs.id }}
     steps:
 
-      - name: Get current date
+      - name: Get Revision
         id: revision
         run: echo "::set-output number=$(svn info --show-item revision https://svn.code.sf.net/p/vice-emu/code/trunk/vice)"
 
