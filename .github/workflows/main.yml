@@ -140,7 +140,7 @@ jobs:
 
       - name: Get current date
         id: revision
-        run: echo "::set-output number=${svn info --show-item revision https://svn.code.sf.net/p/vice-emu/code/trunk/vice}"
+        run: echo "::set-output number=$(svn info --show-item revision https://svn.code.sf.net/p/vice-emu/code/trunk/vice)"
 
       - name: Create Release
         id: create_release
@@ -159,21 +159,10 @@ jobs:
     runs-on: ubuntu-20.04
     
     steps:
-#      - shell: bash
-#        run: git config --global core.autocrlf input
-      
-#      - name: Checkout Source
-#        uses: actions/checkout@v2
 
       - name: SVN Checkout Source
         shell: bash
         run: svn checkout https://svn.code.sf.net/p/vice-emu/code/trunk/vice vice
-
-      - name: Install Dependencies
-        shell: bash
-        run: |
-          sudo apt-get install autoconf automake build-essential byacc flex xa65 dos2unix
-          sudo apt-get install texinfo texlive-fonts-recommended
 
       - name: Install Dependencies
         shell: bash
@@ -187,8 +176,8 @@ jobs:
         run: |
           cd vice
           ./autogen.sh
-          ./configure --enable-headlessui --enable-html-docs --without-pulse --without-alsa --without-png
-          make
+          ./configure --disable-headlessui --enable-html-docs --without-pulse --without-alsa --without-png
+          make -j 6
 
       - name: Upload
         uses: actions/upload-artifact@v2
