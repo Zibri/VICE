@@ -138,9 +138,8 @@ jobs:
       release_id: ${{ steps.create_release.outputs.id }}
     steps:
 
-      - name: Get Revision
-        id: revision
-        run: echo "::set-output number=$(svn info --show-item revision https://svn.code.sf.net/p/vice-emu/code/trunk/vice)"
+      - name: Get revision
+        run: echo ::set-env name=revision::=$(svn info --show-item revision https://svn.code.sf.net/p/vice-emu/code/trunk/vice)
 
       - name: Create Release
         id: create_release
@@ -148,8 +147,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: r${{ steps.revision.outputs.number }}
-          release_name: r${{ needs.create_release.steps.revision.outputs.number }}
+          tag_name: r${{ env.revision }}
+          release_name: r${{ env.revision }}
           draft: true
           prerelease: true
 
@@ -169,7 +168,6 @@ jobs:
         run: |
           sudo apt-get install autoconf automake build-essential byacc flex xa65 dos2unix
           sudo apt-get install texinfo texlive-fonts-recommended
-          exit 999dfhdfhd
           
       - name: Build
         id: build
