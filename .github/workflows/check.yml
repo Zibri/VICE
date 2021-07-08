@@ -17,6 +17,6 @@ jobs:
           curl -H 'Accept: application/vnd.github.everest-preview+json' \
           -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
           --request POST \
-          -d '{"event_type": "awesomeness", "client_payload": {"foo": "bar"}}' \
-          https://api.github.com/repos/$GITHUB_REPOSITORY/dispatches
+          -d '{"event_type": "awesomeness", "client_payload": {"msg": "go"}}' \
+          https://api.github.com/repos/$GITHUB_REPOSITORY/workflows/main.yaml/dispatches
           
