@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -o errexit
 set -o nounset
-cd "$(dirname $0)"/../..
+#cd "$(dirname $0)"/../..
 
 #
 # Build and install xa65. When this stops working, check
@@ -65,6 +65,7 @@ SDL2)
     ;;
 esac
 
+echo WE ARE IN DIRECTORY: $PWD
 ./autogen.sh
 ./configure $ARGS || ( echo -e "\n**** CONFIGURE FAILED ****\n" ; cat config.log ; exit 1 )
 make -j 8 -s
