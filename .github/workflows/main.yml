@@ -66,12 +66,18 @@ jobs:
 #              git push && break
 #              sleep 15
 #            done
+  
 
   cleanup_previous_builds: # Delete unfinished draft prereleases, and prereleases older than 30 days (but keep at least 10)
     name: Cleanup Previous Builds
-
     runs-on: ubuntu-latest
     steps:
+
+      - name: Check if we need to compile
+        run: |
+          revision=$(svn info --show-item revision https://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }})
+          curl -qs "https://github.com/Zibri/VICE/tags"|grep "class.*releases/tag/"|grep -q $revision && exit 1
+
       - uses: actions/github-script@v3
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
@@ -276,7 +282,7 @@ jobs:
         id: build
         shell: msys2 {0}
         run: |
-          cd vice/src
+          cd vice
           MINGW_INSTALLS=${{ matrix.arch.msystem }} ../my_build.sh ${{ matrix.ui }}
           echo ::set-output name=zip_path::$(cygpath -w -a vice/*.7z)
           echo ::set-output name=zip_name::$(basename vice/*.7z)
