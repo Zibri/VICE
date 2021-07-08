@@ -1,12 +1,16 @@
-name: Manual Build
+name: Manual And Scheduled Build
 
 on:
+  schedule:
+  - cron: "0 */2 * * *"    # Every 2 hours
+
   workflow_dispatch:
     inputs:
       revision:
         description: 'Revision'
         required: false
         default: ''
+        
   repository_dispatch:
     inputs:
       revision:
@@ -112,7 +116,7 @@ jobs:
               }
               
               // Keep at least 10, no matter how old
-              if (++releaseCount <= 10)
+              if (++releaseCount <= 20)
                 continue;
               
               // We have more than 10 releases - delete those more than 30 days old
