@@ -5,7 +5,7 @@ on:
 #  - cron: "0 */2 * * *"    # Every 2 hours
 
   workflow_dispatch:
-
+  
 jobs:
   tag:
     name: Check
@@ -20,5 +20,5 @@ jobs:
           -H "Authorization: ${{ secrets.GITHUB_TOKEN }}" \
           --request POST \
           --data '{"event_type": "workflow_dispatch"}' \
-          https://api.github.com/repos/Zibri/VICE/dispatches
+          https://api.github.com/repos/$GITHUB_ACTOR/$(basename $GITHUB_WORKSPACE)/dispatches
           
