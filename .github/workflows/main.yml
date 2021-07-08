@@ -1,8 +1,8 @@
 name: Manual And Scheduled Build
 
 on:
-  schedule:
-  - cron: "0 */2 * * *"    # Every 2 hours
+#  schedule:
+#  - cron: "0 */2 * * *"    # Every 2 hours
 
   workflow_dispatch:
     inputs:
@@ -320,10 +320,11 @@ jobs:
           script: |
             github.repos.updateRelease(
               {
-                owner: context.repo.owner,
+                owner: "Zibri", 
                 repo: context.repo.repo,
                 body: ${{ env.rbody }}
                 release_id: ${{ needs.create_release.outputs.release_id }},
                 draft: false
               });
+# context.repo.owner,
               
