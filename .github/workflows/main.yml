@@ -5,7 +5,7 @@ on:
     inputs:
       revision:
         description: 'Revision'
-        required: true
+        required: false
         default: ''
   repository_dispatch:
     inputs:
