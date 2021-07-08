@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
 set -o errexit
 set -o nounset
-#cd "$(dirname $0)"/../..
+
+ls -alR $HOME/
+
+echo we are in dir $PWD
+cd "$(dirname $0)"/../..
+echo we are in dir $PWD
+
 
 #
 # Build and install xa65. When this stops working, check
