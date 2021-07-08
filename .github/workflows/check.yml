@@ -14,9 +14,9 @@ jobs:
       - name: Check for updates.
         id: check
         run: |
-          curl -H "Accept: application/vnd.github.v3+json" \
+          curl -H 'Accept: application/vnd.github.everest-preview+json' \
           -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
           --request POST \
-          --data '{"event_type": "repository_dispatch"}' \
+          -d '{"event_type": "awesomeness", "client_payload": {"foo": "bar"}}' \
           https://api.github.com/repos/$GITHUB_REPOSITORY/dispatches
           
