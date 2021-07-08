@@ -276,9 +276,9 @@ jobs:
         id: build
         shell: msys2 {0}
         run: |
-          MINGW_INSTALLS=${{ matrix.arch.msystem }} ./vice/build/msys2/github-actions-build.sh ${{ matrix.ui }}
-          echo ::set-output name=zip_path::$(cygpath -w -a vice/*.zip)
-          echo ::set-output name=zip_name::$(basename vice/*.zip)
+          MINGW_INSTALLS=${{ matrix.arch.msystem }} ./my_build.sh ${{ matrix.ui }}
+          echo ::set-output name=zip_path::$(cygpath -w -a vice/*.7z)
+          echo ::set-output name=zip_name::$(basename vice/*.7z)
 
       - name: Upload
         id: upload
@@ -289,7 +289,7 @@ jobs:
           upload_url: ${{ needs.create_release.outputs.upload_url }}
           asset_path: ${{ steps.build.outputs.zip_path }}
           asset_name: ${{ steps.build.outputs.zip_name }}
-          asset_content_type: application/zip
+          asset_content_type: application/x-7z-compressed
 
   publish_release:
     name: Publish Release
