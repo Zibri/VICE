@@ -326,7 +326,7 @@ jobs:
               {
                 owner: "Zibri", 
                 repo: context.repo.repo,
-                bodyFile: fs.readFileSync('revbody.txt', 'utf8'),
+                body: fs.readFileSync('revbody.txt', 'utf8'),
                 release_id: ${{ needs.create_release.outputs.release_id }},
                 draft: false
               });
