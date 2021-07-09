@@ -312,9 +312,12 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+      - name: Get revision
+        run: |
+          echo "rbody=$(svn log -l 1 https://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }})" >> $GITHUB_ENV
+
       - uses: actions/github-script@v3
-        env:
-          rbody: $(svn log -l 1 https://svn.code.sf.net/p/vice-emu/code/trunk/vice)          
+                 
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
