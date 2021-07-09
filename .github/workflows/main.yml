@@ -122,7 +122,7 @@ jobs:
               // We have more than 10 releases - delete those more than 30 days old
               let daysAgo = Math.floor((new Date() - Date.parse(release.created_at)) / 1000 / 60 / 60 / 24);
 
-              if (daysAgo <= 30)
+              if (daysAgo <= 15)
                 continue;
               
               console.log("Will delete old prerelease: " + release.tag_name);
