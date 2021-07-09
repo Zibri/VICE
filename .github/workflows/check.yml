@@ -25,6 +25,7 @@ jobs:
           "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/main.yml/dispatches" || exit 0 && \
           echo "New revision $revision on SVN!"
           sleep 60
+          for a in $(curl -qs https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/check.yml/runs|grep -B 1 "Check For Updates"|grep id|tr -d " ,"|cut -d ":" -f 2);do curl -qs -X DELETE -H "Accept: application/vnd.github.v3+json" -H "Authorization: token $GITHUB_TOKEN " "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/runs/$a";done
           )
           )
           
