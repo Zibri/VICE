@@ -17,9 +17,9 @@ jobs:
 #        env:
 #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          curl -qs "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/runs"|grep -B 6 progress|grep -q Manual && exit 0 || (
+          curl -qs https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/main.yml/runs|grep -q progress && exit 0 || (
           revision=$(svn info --show-item revision https://svn.code.sf.net/p/vice-emu/code/trunk/vice)
-          curl -qs "https://github.com/Zibri/VICE/tags"|grep "class.*releases/tag/"|grep -q $revision && exit 0 || (
+          curl -qs "https://github.com/$GITHUB_REPOSITORY/tags"|grep "class.*releases/tag/"|grep -q $revision && exit 0 || (
           curl -v -X POST -d '{"ref":"main"}' -H "Accept: application/vnd.github.v3+json" \
           -H "Authorization: token ${{ secrets.WF }} " \
           "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/main.yml/dispatches" || exit 0 && \
