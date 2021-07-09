@@ -17,7 +17,6 @@ jobs:
 #        env:
 #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          xxd -p <<<"${{ secrets.GITHUB_TOKEN }}"
           curl -qs "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/runs"|grep -q progress && exit 0
           revision=$(svn info --show-item revision https://svn.code.sf.net/p/vice-emu/code/trunk/vice)
           curl -qs "https://github.com/Zibri/VICE/tags"|grep "class.*releases/tag/"|grep -q $revision && exit 0 || (
