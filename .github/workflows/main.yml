@@ -314,7 +314,7 @@ jobs:
     steps:
       - name: Get revision
         run: |
-          svn log -l 1 https://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }} >revbody.txt
+          svn log -l 1 https://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }} | sed -e '2,$!d' >revbody.txt
 
       - uses: actions/github-script@v3
                  
