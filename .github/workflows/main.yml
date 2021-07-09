@@ -77,11 +77,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - name: Check if we need to compile
-        run: |
-          revision=$(svn info --show-item revision https://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }})
-          echo Latest revision: $revision
-          curl -qs "https://github.com/Zibri/VICE/tags"|grep "class.*releases/tag/"|grep "$revision" && exit 1 || exit 0
+#      - name: Check if we need to compile
+#        run: |
+#          revision=$(svn info --show-item revision https://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }})
+#          echo Latest revision: $revision
+#          curl -qs "https://github.com/Zibri/VICE/tags"|grep "class.*releases/tag/"|grep "$revision" && exit 1 || exit 0
 
       - uses: actions/github-script@v3
         with:
