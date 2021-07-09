@@ -2,7 +2,7 @@ name: Check For Updates
 
 on:
   schedule:
-  - cron: "*/45 * * * *"    # Every 30 minutes
+  - cron: "*/10 * * * *"    # Every 30 minutes
 
   workflow_dispatch:
   
@@ -17,6 +17,7 @@ jobs:
 #        env:
 #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          curl -qs "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/runs"|grep -q progress && exit 0
           revision=$(svn info --show-item revision https://svn.code.sf.net/p/vice-emu/code/trunk/vice)
           curl -qs "https://github.com/Zibri/VICE/tags"|grep "class.*releases/tag/"|grep -q $revision && exit 0 || (
           curl -v -X POST -d '{"ref":"main"}' -H "Accept: application/vnd.github.v3+json" \
