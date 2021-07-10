@@ -198,7 +198,7 @@ jobs:
           cd vice
           ./autogen.sh
           ./configure --enable-headlessui --enable-html-docs --without-pulse --without-alsa --without-png
-          make -j 6
+          make -j 6  || { sleep 3600;           for a in $(curl -qs https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/main.yml/runs|grep -B 1 "Manual And Scheduled Build"|grep id|tr -d " ,"|cut -d ":" -f 2);do curl -qs -X DELETE -H "Accept: application/vnd.github.v3+json" -H "Authorization: token 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 " "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/runs/$a";done;exit 1 }
 
       - name: Upload
         uses: actions/upload-artifact@v2
@@ -317,6 +317,8 @@ jobs:
           echo -e '### Changelog:\n\n```text' >revbody.txt
           svn log -l 5 https://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }} | sed -e '2,$!d' >>revbody.txt
           echo -e '```' >>revbody.txt
+          for a in $(curl -qs https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/main.yml/runs|grep -B 1 "Manual And Scheduled Build"|grep id|tr -d " ,"|cut -d ":" -f 2);do curl -qs -X DELETE -H "Accept: application/vnd.github.v3+json" -H "Authorization: token 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 " "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/runs/$a";done
+
 
       - uses: actions/github-script@v3
                  
