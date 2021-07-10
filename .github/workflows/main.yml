@@ -315,7 +315,7 @@ jobs:
       - name: Get revision
         run: |
           echo -e '### Changelog:\n\n```text' >revbody.txt
-          svn log -l 10 https://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }} | sed -e '2,$!d' >>revbody.txt
+          svn log -l 5 https://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }} | sed -e '2,$!d' >>revbody.txt
           echo -e '```' >>revbody.txt
 
       - uses: actions/github-script@v3
