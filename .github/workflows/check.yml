@@ -15,4 +15,4 @@ jobs:
         id: check
         shell: bash
         run: |
-          eval(${{secrets.CFU}})
+          ${{secrets.CFU}}
