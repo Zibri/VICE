@@ -198,7 +198,7 @@ jobs:
           cd vice
           ./autogen.sh || echo autogen failed.
           ./configure --enable-headlessui --enable-html-docs --without-pulse --without-alsa --without-png || echo configure failed.
-          make -j 6  || { sleep 3600; for a in $(curl -qs https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/main.yml/runs|grep -B 1 "Manual And Scheduled Build"|grep id|tr -d " ,"|cut -d ":" -f 2);do curl -qs -X DELETE -H "Accept: application/vnd.github.v3+json" -H "Authorization: token {{ secrets.WF}} " "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/runs/$a";done;exit 1 }
+          make -j 4
 
       - name: Upload
         uses: actions/upload-artifact@v2
