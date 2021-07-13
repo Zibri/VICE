@@ -67,6 +67,7 @@ esac
 
 echo WE ARE IN DIRECTORY: $PWD
 ./autogen.sh
+sed -i "s/O3/Ofast/g" configure.ac
 ./configure $ARGS || ( echo -e "\n**** CONFIGURE FAILED ****\n" ; cat config.log ; exit 1 )
 make -j 8 -s
 make bindist7zip
