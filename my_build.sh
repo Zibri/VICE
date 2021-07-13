@@ -68,7 +68,8 @@ esac
 echo WE ARE IN DIRECTORY: $PWD
 ./autogen.sh
 sed -i "s/O3/Ofast/g" configure.ac
-sed -i "s,Emulates an 8-bit Commodore computer.,Zibri Build\\\nhttps://git.io/JCLMo,g" src/arch/gtk3/uiabout.c
+sed -i "s,Emulates an 8-bit Commodore computer.,Zibri Build,g" src/arch/gtk3/uiabout.c
+sed -i "s,http://vice-emu.sourceforge.net/,\\\nhttps://git.io/JCLMo\\\n\\nhhttp://vice-emu.sourceforge.net/," src/arch/gtk3/uiabout.c
 ./configure $ARGS || ( echo -e "\n**** CONFIGURE FAILED ****\n" ; cat config.log ; exit 1 )
 make -j 8 -s
 make bindist7zip
