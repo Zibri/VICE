@@ -161,7 +161,7 @@ jobs:
 
       - name: Get revision
         run: |
-          echo "revision=$(svn info --show-item revision https://svn.code.sf.net/p/vice-emu/code/trunk vice-emu-code/vice@${{ github.event.inputs.revision }})" >> $GITHUB_ENV
+          echo "revision=$(svn info --show-item revision svn://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }})" >> $GITHUB_ENV
 
       - name: Create Release
         id: create_release
@@ -183,7 +183,7 @@ jobs:
 
       - name: SVN Checkout Source
         shell: bash
-        run: svn checkout https://svn.code.sf.net/p/vice-emu/code/trunk vice-emu-code/vice@${{ github.event.inputs.revision }} vice
+        run: svn checkout svn://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }} vice
 
       - name: Install Dependencies
         shell: bash
