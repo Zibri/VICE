@@ -8,7 +8,7 @@ cd "$(dirname $0)"/../..
 # https://www.floodgap.com/retrotech/xa/dists/ for a newer version.
 #
 
-XA_VERSION=2.3.11
+XA_VERSION=2.3.12
 
 if [ ! -e /usr/local/bin/xa65.exe ]
 then
