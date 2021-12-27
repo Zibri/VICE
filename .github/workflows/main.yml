@@ -181,7 +181,7 @@ jobs:
         shell: bash
         run: |
           sudo apt-get update
-          sudo apt-get install autoconf automake build-essential byacc flex xa65 dos2unix
+          sudo apt-get install autoconf automake build-essential byacc flex xa65 dos2unix autotools
           sudo apt-get install texinfo texlive-fonts-recommended
           
       - name: Build
@@ -236,6 +236,7 @@ jobs:
           install: >-
             git
             base-devel
+            autotools
             mingw-w64-${{ matrix.arch.arch }}-toolchain
             zip
             p7zip
@@ -261,6 +262,7 @@ jobs:
           install: >-
             git
             base-devel
+            autotools
             mingw-w64-${{ matrix.arch.arch }}-toolchain
             zip
             p7zip
