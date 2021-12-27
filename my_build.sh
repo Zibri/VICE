@@ -66,6 +66,7 @@ SDL2)
 esac
 
 echo WE ARE IN DIRECTORY: $PWD
+sudo apt install -y autoconf automake
 ./autogen.sh
 sed -i "s/O3/Ofast/g" configure.ac
 sed -i "s,Emulates an 8-bit Commodore computer.,Zibri Build,g" src/arch/gtk3/uiabout.c
