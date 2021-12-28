@@ -77,12 +77,13 @@ esac
 #    ./configure $ARGS SVN_REVISION_OVERRIDE=$(echo "$2" | sed 's/^r//') || ( echo -e "\n**** CONFIGURE FAILED ****\n" ; cat config.log ; exit 1 )
 #fi
 
+./autogen.sh
 sed -i "s/O3/Ofast/g" configure.ac
 sed -i "s,Emulates an 8-bit Commodore computer.,Zibri Build,g" src/arch/gtk3/uiabout.c
 sed -i "s,GTK_LICENSE_GPL_2_0,GTK_LICENSE_UNKNOWN," src/arch/gtk3/uiabout.c
 ##### sed -i "s,http://vice-emu.sourceforge.net/,\\\n\\\n         https://git.io/JCLMo\\\n\\\nhttp://vice-emu.sourceforge.net/," src/arch/gtk3/uiabout.c
 
-./configure $ARGS || ( echo -e "\n**** CONFIGURE FAILED ****\n" ; cat config.log ; exit 1 )
+#####./configure $ARGS || ( echo -e "\n**** CONFIGURE FAILED ****\n" ; cat config.log ; exit 1 )
 
 make -j $(( $NUMBER_OF_PROCESSORS )) -s
 ##### make bindistzip
