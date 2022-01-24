@@ -272,8 +272,8 @@ jobs:
         shell: bash
         run: | 
           svn checkout svn://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }} vice
-          rm -rf ./vice/build/msys2/github-actions-build.sh
-          cp my_build.sh ./vice/build/msys2/github-actions-build.sh
+          rm -rf ./vice/build/github-actions/build-msys2.sh
+          cp my_build.sh ./vice/build/github-actions/build-msys2.sh
       - name: Download Documentation
         uses: actions/download-artifact@v2
         with:
@@ -284,7 +284,7 @@ jobs:
         id: build
         shell: msys2 {0}
         run: |
-          MINGW_INSTALLS=${{ matrix.arch.msystem }} ./vice/build/msys2/github-actions-build.sh ${{ matrix.ui }}
+          MINGW_INSTALLS=${{ matrix.arch.msystem }} ./vice/build/github-actions/build-msys2.sh ${{ matrix.ui }}
           echo ::set-output name=zip_path::$(cygpath -w -a vice/*.7z)
           echo ::set-output name=zip_name::$(basename vice/*.7z)
       - name: Upload
