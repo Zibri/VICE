@@ -1,8 +1,8 @@
 name: Check For Updates
 
 on:
-  schedule:
-  - cron: "*/10 * * * *"    # Every 30 minutes
+  #schedule:
+  #- cron: "*/10 * * * *"    # Every 30 minutes
 
   workflow_dispatch:
   
