@@ -79,7 +79,7 @@ esac
 
 ./autogen.sh
 sed -i "s/O3/Ofast/g" configure.ac
-sed -i "s/Emulates an 8-bit Commodore computer/Zibri's Build/" src/arch/gtk3/uiabout.c
+sed -i "s/Emulates a %s/Zibri's Build/" src/arch/gtk3/uiabout.c
 sed -i "s,GTK_LICENSE_GPL_2_0,GTK_LICENSE_UNKNOWN," src/arch/gtk3/uiabout.c
 ##### sed -i "s,http://vice-emu.sourceforge.net/,\\\n\\\n         https://git.io/JCLMo\\\n\\\nhttp://vice-emu.sourceforge.net/," src/arch/gtk3/uiabout.c
 
