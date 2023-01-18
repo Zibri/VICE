@@ -1,7 +1,7 @@
 # VICE
 The fresher build on the net :D
 
-![GitHub all releases](https://img.shields.io/github/downloads/Zibri/VICE/total?style=for-the-badge)
+[![GitHub all releases](https://img.shields.io/github/downloads/Zibri/VICE/total?style=for-the-badge)](https://github.com/Zibri/VICE/releases)
 
 A lot of downloads and nobody donated. Come on guys!
 
