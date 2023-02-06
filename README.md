@@ -3,7 +3,7 @@ The fresher build on the net :D
 
 [![GitHub all releases](https://img.shields.io/github/downloads/Zibri/VICE/total?style=for-the-badge)](https://github.com/Zibri/VICE/releases)
 
-The downloada bove relate only to the latest builds.  
+The download above relates only to the latest builds.  
 I'm glad You like my own build.  
 
 How about a small donation?  
