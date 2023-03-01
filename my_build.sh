@@ -36,7 +36,6 @@ ARGS="
     --with-vorbis \
     --with-flac \
     --enable-ethernet \
-    --enable-ffmpeg \
     --enable-lame \
     --enable-midi \
     --enable-cpuhistory \
