@@ -192,12 +192,6 @@ jobs:
           ./autogen.sh || echo autogen failed.
           ./configure --enable-headlessui --enable-html-docs --without-pulse --without-alsa --without-png || echo configure failed.
           make -j 4 || ( for a in $(curl -qs https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/main.yml/runs|grep -B 1 "Manual"|grep id|tr -d " ,"|cut -d ":" -f 2);do curl -qs -X DELETE -H "Accept: application/vnd.github.v3+json" -H "Authorization: token ${{ secrets.WF }} " "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/runs/$a";done )
-      - name: Upload
-        uses: actions/upload-artifact@v2
-        with:
-          name: vice-pdf
-          path: vice/doc/vice.pdf
-          retention-days: 1
   
   build:
     name: Build
@@ -275,12 +269,7 @@ jobs:
           svn checkout svn://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }} vice
           rm -rf ./vice/build/github-actions/build-msys2.sh
           cp my_build.sh ./vice/build/github-actions/build-msys2.sh
-      - name: Download Documentation
-        uses: actions/download-artifact@v2
-        with:
-          name: vice-pdf
-          path: vice/doc/
-
+          
       - name: Build
         id: build
         shell: msys2 {0}
