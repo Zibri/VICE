@@ -38,7 +38,6 @@ ARGS="
     --enable-ethernet \
     --enable-lame \
     --enable-midi \
-    --enable-ffmpeg \
     --enable-cpuhistory \
     --enable-external-ffmpeg \
  	--enable-platformdox \
