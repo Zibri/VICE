@@ -88,7 +88,7 @@ sed -i "s/The %s Emulator/𝓩𝓲𝓫𝓻𝓲'𝓼 𝓑𝓾𝓲𝓵𝓭./" src/
 #sed -i "s,GTK_LICENSE_GPL_2_0,GTK_LICENSE_UNKNOWN," src/arch/gtk3/uiabout.c
 ##### sed -i "s,http://vice-emu.sourceforge.net/,\\\n\\\n         https://git.io/JCLMo\\\n\\\nhttp://vice-emu.sourceforge.net/," src/arch/gtk3/uiabout.c
 
-USE_SVN_REVISION=1 ./configure $ARGS || ( echo -e "\n**** CONFIGURE FAILED ****\n" ; cat config.log ; exit 1 )
+./configure $ARGS SVN_REVISION_OVERRIDE=$(echo "$2" | sed 's/^r//') || ( echo -e "\n**** CONFIGURE FAILED ****\n" ; cat config.log ; exit 1 )
 
 make USE_SVN_REVISION=1 -j $(( $NUMBER_OF_PROCESSORS )) -s
 ##### make bindistzip
