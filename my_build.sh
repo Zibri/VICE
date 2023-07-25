@@ -94,4 +94,4 @@ make USE_SVN_REVISION=1 -j $(( $NUMBER_OF_PROCESSORS )) -s
 ##### make bindistzip
 
 ##### make -j 8 -s
-make bindist7zip
+make USE_SVN_REVISION=1 bindist7zip
