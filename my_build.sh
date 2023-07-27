@@ -38,27 +38,7 @@ fi
 
 pacman -U --noconfirm mingw-w64-x86_64-ffmpeg-4.4-9-any.pkg.tar.zst mingw-w64-x86_64-celt-0.11.3-5-any.pkg.tar.zst
 
-ARGS="
-    --disable-arch \
-    --disable-pdf-docs \
-    --with-png \
-    --with-gif \
-    --with-vorbis \
-    --with-flac \
-    --enable-ethernet \
-    --enable-midi \
-    --enable-cpuhistory \
- 	--enable-platformdox \
- 	--enable-html-docs \
-	--enable-rs232 \
-	--enable-new8580filter \
-	--with-resid \
-	--enable-x64 \
-	--enable-x64-image \
-	--enable-realdevice \
-	--enable-ffmpeg \
-    "
-
+ARGS="--disable-arch --disable-pdf-docs --with-png --with-gif --with-vorbis --with-flac --enable-ethernet --enable-midi --enable-cpuhistory --enable-platformdox --enable-html-docs --enable-rs232 --enable-new8580filter --with-resid --enable-x64 --enable-x64-image --enable-realdevice --enable-ffmpeg"
 case "$1" in
 GTK3)
     ARGS="--enable-native-gtk3ui $ARGS"
@@ -74,24 +54,10 @@ SDL2)
     ;;
 esac
 
-# Skip autogen.sh when building release from tarball
-#if [ "$2" = "release" ]; then
-#    ./configure $ARGS || ( echo -e "\n**** CONFIGURE FAILED ****\n" ; cat config.log ; exit 1 )
-#else
-#    ./autogen.sh
-#    ./configure $ARGS SVN_REVISION_OVERRIDE=$(echo "$2" | sed 's/^r//') || ( echo -e "\n**** CONFIGURE FAILED ****\n" ; cat config.log ; exit 1 )
-#fi
-
-./autogen.sh
-sed -i "s/O3/Ofast/g" configure.ac
+USE_SVN_REVISION=1
 sed -i "s/The %s Emulator/𝓩𝓲𝓫𝓻𝓲'𝓼 𝓑𝓾𝓲𝓵𝓭./" src/arch/gtk3/uiabout.c
-#sed -i "s,GTK_LICENSE_GPL_2_0,GTK_LICENSE_UNKNOWN," src/arch/gtk3/uiabout.c
-##### sed -i "s,http://vice-emu.sourceforge.net/,\\\n\\\n         https://git.io/JCLMo\\\n\\\nhttp://vice-emu.sourceforge.net/," src/arch/gtk3/uiabout.c
+./autogen.sh
+./configure $ARGS
+sync
+make -j8 && make bindist7zip
 
-./configure $ARGS SVN_REVISION_OVERRIDE=$(echo "$2" | sed 's/^r//') || ( echo -e "\n**** CONFIGURE FAILED ****\n" ; cat config.log ; exit 1 )
-
-make USE_SVN_REVISION=1 -j $(( $NUMBER_OF_PROCESSORS )) -s
-##### make bindistzip
-
-##### make -j 8 -s
-make USE_SVN_REVISION=1 bindist7zip
