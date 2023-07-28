@@ -57,7 +57,7 @@ esac
 USE_SVN_REVISION=1
 sed -i "s/The %s Emulator/𝓩𝓲𝓫𝓻𝓲'𝓼 𝓑𝓾𝓲𝓵𝓭./" src/arch/gtk3/uiabout.c
 ./autogen.sh
-./configure $ARGS
+./configure $ARGS SVN_REVISION_OVERRIDE=$(svn info --show-item revision)
 sync
 make -j8 && make bindist7zip
 
