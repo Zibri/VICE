@@ -1,4 +1,4 @@
-name: Manual And Scheduled Build
+name: Test Manual And Scheduled Build
 
 on:
 
@@ -128,7 +128,7 @@ jobs:
         if: ${{ matrix.ui == 'GTK3' }}
         uses: msys2/setup-msys2@v2
         with:
-          msystem: ${{ matrix.arch.msystem }}
+          msystem: MINGW64
           update: true
           install: >-
             git
@@ -138,44 +138,17 @@ jobs:
             zip
             p7zip
             subversion
-            mingw-w64-${{ matrix.arch.arch }}-pkg-config
-            mingw-w64-${{ matrix.arch.arch }}-ntldd
-            mingw-w64-${{ matrix.arch.arch }}-glew
-            mingw-w64-${{ matrix.arch.arch }}-giflib
-            mingw-w64-${{ matrix.arch.arch }}-lame
-            mingw-w64-${{ matrix.arch.arch }}-libvorbis
-            mingw-w64-${{ matrix.arch.arch }}-flac
-            mingw-w64-${{ matrix.arch.arch }}-icoutils
-            mingw-w64-${{ matrix.arch.arch }}-gtk3
-            mingw-w64-${{ matrix.arch.arch }}-libpcap
+            mingw-w64-x86_64-pkg-config
+            mingw-w64-x86_64-ntldd
+            mingw-w64-x86_64-glew
+            mingw-w64-x86_64-giflib
+            mingw-w64-x86_64-lame
+            mingw-w64-x86_64-libvorbis
+            mingw-w64-x86_64-flac
+            mingw-w64-x86_64-icoutils
+            mingw-w64-x86_64-gtk3
+            mingw-w64-x86_64-libpcap
       
-      - name: Install SDL2 Dependencies if Applicable
-        if: ${{ matrix.ui == 'SDL2' }}
-        uses: msys2/setup-msys2@v2
-        with:
-          msystem: ${{ matrix.arch.msystem }}
-          update: true
-          install: >-
-            git
-            base-devel
-            autotools
-            mingw-w64-${{ matrix.arch.arch }}-toolchain
-            zip
-            p7zip
-            subversion
-            git
-            mingw-w64-${{ matrix.arch.arch }}-pkg-config
-            mingw-w64-${{ matrix.arch.arch }}-ntldd
-            mingw-w64-${{ matrix.arch.arch }}-glew
-            mingw-w64-${{ matrix.arch.arch }}-giflib
-            mingw-w64-${{ matrix.arch.arch }}-lame
-            mingw-w64-${{ matrix.arch.arch }}-libvorbis
-            mingw-w64-${{ matrix.arch.arch }}-flac
-            mingw-w64-${{ matrix.arch.arch }}-icoutils
-            mingw-w64-${{ matrix.arch.arch }}-SDL2
-            mingw-w64-${{ matrix.arch.arch }}-SDL2_image
-            mingw-w64-${{ matrix.arch.arch }}-libpcap
-            
       - name: SVN Checkout Source
         shell: bash
         run: | 
