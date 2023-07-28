@@ -184,15 +184,6 @@ jobs:
           sudo apt-get install autoconf automake build-essential byacc flex xa65 dos2unix
           sudo apt-get install texinfo texlive-fonts-recommended texlive-latex-extra libpcap-dev
           
-      - name: Build
-        id: build
-        shell: bash
-        run: |
-          cd vice
-          ./autogen.sh || echo autogen failed.
-          ./configure --enable-headlessui --enable-html-docs --without-pulse --without-alsa --without-png || echo configure failed.
-          make -j 4 || ( for a in $(curl -qs https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/main.yml/runs|grep -B 1 "Manual"|grep id|tr -d " ,"|cut -d ":" -f 2);do curl -qs -X DELETE -H "Accept: application/vnd.github.v3+json" -H "Authorization: token ${{ secrets.WF }} " "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/runs/$a";done )
-  
   build:
     name: Build
     needs: [create_release, build_doc]
@@ -202,7 +193,7 @@ jobs:
       matrix:
         arch:
         - { msystem: MINGW64, arch: x86_64 }
-        ui: [ GTK3, SDL2 ]
+        ui: [ GTK3 ]
         
     steps:
     
