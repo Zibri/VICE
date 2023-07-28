@@ -176,7 +176,7 @@ jobs:
           #cat >&2 ./vice/build/github-actions/build-msys2.sh
 
           #MINGW_INSTALLS=MINGW64 ./vice/build/github-actions/build-msys2.sh GTK3
-          ./my_build.sh
+          ./my_build.sh GTK3
           echo ::set-output name=zip_path::$(cygpath -w -a vice/*.7z)
           echo ::set-output name=zip_name::$(basename vice/*.7z)
       - name: Upload
