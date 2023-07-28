@@ -56,7 +56,9 @@ esac
 
 sed -i "s/The %s Emulator/𝓩𝓲𝓫𝓻𝓲'𝓼 𝓑𝓾𝓲𝓵𝓭./" src/arch/gtk3/uiabout.c
 ./autogen.sh
-./configure $ARGS SVN_REVISION_OVERRIDE=$(svn info --show-item revision svn://svn.code.sf.net/p/vice-emu/code/trunk/vice)
+export SVN_REVISION_OVERRIDE=$(svn info --show-item revision svn://svn.code.sf.net/p/vice-emu/code/trunk/vice)
+export USE_SVN_REVISION=1
+./configure SVN_REVISION_OVERRIDE=$(svn info --show-item revision svn://svn.code.sf.net/p/vice-emu/code/trunk/vice) $ARGS
 make -j8 clean
 sync
 make -j8 && make bindist7zip
