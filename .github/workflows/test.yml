@@ -110,9 +110,23 @@ jobs:
           draft: true
           prerelease: true
 
+  build_doc:
+    name: Test Headless, Build Documentation
+    needs: create_release
+    runs-on: ubuntu-20.04
+   
+    steps:
+
+      - name: Install Dependencies
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install autoconf automake build-essential byacc flex xa65 dos2unix
+          sudo apt-get install texinfo texlive-fonts-recommended texlive-latex-extra libpcap-dev
+          
   build:
     name: Build
-    needs: [create_release]
+    needs: [create_release, build_doc]
     runs-on: windows-latest
     strategy:
       fail-fast: false
@@ -122,8 +136,7 @@ jobs:
       - name: Checkout Source
         uses: actions/checkout@v2
 
-      - name: Install GTK3 Dependencies if Applicable
-        if: ${{ matrix.ui == 'GTK3' }}
+      - name: Install GTK3 Dependencies
         uses: msys2/setup-msys2@v2
         with:
           msystem: MINGW64
