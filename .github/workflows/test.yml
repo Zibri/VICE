@@ -169,13 +169,14 @@ jobs:
         id: build
         shell: msys2 {0}
         run: |
-          rm -rf ./vice/build/github-actions/build-msys2.sh
-          cp my_build.sh ./vice/build/github-actions/build-msys2.sh
-          sync
-          echo >&2 "TESTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
-          cat >&2 ./vice/build/github-actions/build-msys2.sh
+          #rm -rf ./vice/build/github-actions/build-msys2.sh
+          #cp my_build.sh ./vice/build/github-actions/build-msys2.sh
+          #sync
+          #echo >&2 "TESTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
+          #cat >&2 ./vice/build/github-actions/build-msys2.sh
 
-          MINGW_INSTALLS=MINGW64 ./vice/build/github-actions/build-msys2.sh GTK3
+          #MINGW_INSTALLS=MINGW64 ./vice/build/github-actions/build-msys2.sh GTK3
+          ./my_build.sh
           echo ::set-output name=zip_path::$(cygpath -w -a vice/*.7z)
           echo ::set-output name=zip_name::$(basename vice/*.7z)
       - name: Upload
