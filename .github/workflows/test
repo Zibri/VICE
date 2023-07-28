@@ -1,0 +1,236 @@
+name: Manual And Scheduled Build
+
+on:
+
+  workflow_dispatch:
+    inputs:
+      revision:
+        description: 'Revision'
+        required: false
+        default: ''
+        
+  repository_dispatch:
+    inputs:
+      revision:
+        description: 'Revision'
+        required: false
+        default: ''
+
+concurrency: 
+  group: Snapshot Build
+  cancel-in-progress: true
+
+jobs:
+
+  cleanup_previous_builds: # Delete unfinished draft prereleases, and prereleases older than 30 days (but keep at least 10)
+    name: Cleanup Previous Builds
+    runs-on: ubuntu-latest
+    steps:
+
+      - uses: actions/github-script@v3
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            // Get a list of all releases, sorted newest first
+            let releases =
+              (await github.paginate(
+                github.repos.listReleases,
+                {
+                  owner: context.repo.owner,
+                  repo: context.repo.repo
+                }))
+                .sort((a,b) => b.created_at.localeCompare(a.created_at));
+            
+            let releaseCount = 0;
+            let releasesToDelete = [];
+            // Initiate deletion of draft prereleases
+            for (const release of releases)
+            {
+              // Only cleanup prereleases
+              if (!release.prerelease)
+                continue;
+              // Failed builds leave drafts - delete them
+              if (release.draft)
+              {
+                console.log("Will delete draft prerelease: " + release.tag_name);
+                releasesToDelete.push(release.id);
+                continue;
+              }
+              
+              // Keep at least 10, no matter how old
+              if (++releaseCount <= 20)
+                continue;
+              
+              // We have more than 10 releases - delete those more than 30 days old
+              let daysAgo = Math.floor((new Date() - Date.parse(release.created_at)) / 1000 / 60 / 60 / 24);
+              if (daysAgo <= 15)
+                continue;
+              
+              console.log("Will delete old prerelease: " + release.tag_name);
+              releasesToDelete.push(release.id);
+            }
+            if (releasesToDelete.length)
+            {
+              let promises = [];
+              for (const id of releasesToDelete)
+              {
+                promises.push(
+                  github.repos.deleteRelease(
+                    {
+                      owner: context.repo.owner,
+                      repo: context.repo.repo,
+                      release_id: id
+                    }));
+              }
+              
+              console.log("Waiting for deletions to complete");
+              await Promise.all(promises);
+            }
+            console.log("Done.");
+  create_release:
+    name: Create Draft Release
+    needs: cleanup_previous_builds
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+      release_id: ${{ steps.create_release.outputs.id }}
+    steps:
+
+      - name: Get revision
+        run: |
+          echo "revision=$(svn info --show-item revision svn://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }})" >> $GITHUB_ENV
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.WF }}
+        with:
+          tag_name: r${{ env.revision }}
+          release_name: r${{ env.revision }}
+          draft: true
+          prerelease: true
+
+  build:
+    name: Build
+    needs: [create_release, build_doc]
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      arch:
+      - { msystem: MINGW64, arch: x86_64 }
+        
+    steps:
+    
+      - name: Checkout Source
+        uses: actions/checkout@v2
+
+      - name: Install GTK3 Dependencies if Applicable
+        if: ${{ matrix.ui == 'GTK3' }}
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: ${{ matrix.arch.msystem }}
+          update: true
+          install: >-
+            git
+            base-devel
+            autotools
+            mingw-w64-${{ matrix.arch.arch }}-toolchain
+            zip
+            p7zip
+            subversion
+            mingw-w64-${{ matrix.arch.arch }}-pkg-config
+            mingw-w64-${{ matrix.arch.arch }}-ntldd
+            mingw-w64-${{ matrix.arch.arch }}-glew
+            mingw-w64-${{ matrix.arch.arch }}-giflib
+            mingw-w64-${{ matrix.arch.arch }}-lame
+            mingw-w64-${{ matrix.arch.arch }}-libvorbis
+            mingw-w64-${{ matrix.arch.arch }}-flac
+            mingw-w64-${{ matrix.arch.arch }}-icoutils
+            mingw-w64-${{ matrix.arch.arch }}-gtk3
+            mingw-w64-${{ matrix.arch.arch }}-libpcap
+      
+      - name: Install SDL2 Dependencies if Applicable
+        if: ${{ matrix.ui == 'SDL2' }}
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: ${{ matrix.arch.msystem }}
+          update: true
+          install: >-
+            git
+            base-devel
+            autotools
+            mingw-w64-${{ matrix.arch.arch }}-toolchain
+            zip
+            p7zip
+            subversion
+            git
+            mingw-w64-${{ matrix.arch.arch }}-pkg-config
+            mingw-w64-${{ matrix.arch.arch }}-ntldd
+            mingw-w64-${{ matrix.arch.arch }}-glew
+            mingw-w64-${{ matrix.arch.arch }}-giflib
+            mingw-w64-${{ matrix.arch.arch }}-lame
+            mingw-w64-${{ matrix.arch.arch }}-libvorbis
+            mingw-w64-${{ matrix.arch.arch }}-flac
+            mingw-w64-${{ matrix.arch.arch }}-icoutils
+            mingw-w64-${{ matrix.arch.arch }}-SDL2
+            mingw-w64-${{ matrix.arch.arch }}-SDL2_image
+            mingw-w64-${{ matrix.arch.arch }}-libpcap
+            
+      - name: SVN Checkout Source
+        shell: bash
+        run: | 
+          svn checkout svn://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }} vice
+
+      - name: Build
+        id: build
+        shell: msys2 {0}
+        run: |
+          rm -rf ./vice/build/github-actions/build-msys2.sh
+          cp my_build.sh ./vice/build/github-actions/build-msys2.sh
+          sync
+          echo >&2 "TESTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
+          cat >&2 ./vice/build/github-actions/build-msys2.sh
+
+          MINGW_INSTALLS=${{ matrix.arch.msystem }} ./vice/build/github-actions/build-msys2.sh GTK3
+          echo ::set-output name=zip_path::$(cygpath -w -a vice/*.7z)
+          echo ::set-output name=zip_name::$(basename vice/*.7z)
+      - name: Upload
+        id: upload
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create_release.outputs.upload_url }}
+          asset_path: ${{ steps.build.outputs.zip_path }}
+          asset_name: ${{ steps.build.outputs.zip_name }}
+          asset_content_type: application/x-7z-compressed
+
+  publish_release:
+    name: Publish Release
+    needs: [create_release, build]
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Get revision
+        run: |
+          echo -e '### Changelog:\n\n```text' >revbody.txt
+          svn log -l 5 svn://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }} | sed -e '2,$!d' >>revbody.txt
+          echo -e '```' >>revbody.txt
+          for a in $(curl -qs https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/main.yml/runs|grep -B 1 "Manual And Scheduled Build"|grep id|tr -d " ,"|cut -d ":" -f 2);do curl -qs -X DELETE -H "Accept: application/vnd.github.v3+json" -H "Authorization: token ${{ secrets.WF }} " "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/runs/$a";done
+      - uses: actions/github-script@v3
+                 
+        with:
+          github-token: ${{secrets.WF}} # ${{secrets.GITHUB_TOKEN}}
+          script: |
+            fs=require("fs");
+            github.repos.updateRelease(
+              {
+                owner: context.repo.owner, 
+                repo: context.repo.repo,
+                body: fs.readFileSync('revbody.txt', 'utf8').toString(),
+                release_id: ${{ needs.create_release.outputs.release_id }},
+                draft: false,
+                prerelease: false,
+                release: true
+              });
+              
