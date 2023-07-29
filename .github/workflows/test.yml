@@ -159,8 +159,10 @@ jobs:
 
       - name: SVN Checkout Source
         id: checkout
-        shell: msys2 {0}
-        run: svn checkout svn://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }} vice
+        shell: bash
+        run: |
+         svn log -l 5 svn://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }}
+         svn checkout svn://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }} vice
 
       - name: Build
         id: build
