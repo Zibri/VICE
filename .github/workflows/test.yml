@@ -1,245 +1,223 @@
-name: Test Manual And Scheduled Build
-
+name: Make Release
 on:
-
-  workflow_dispatch:
-    inputs:
-      revision:
-        description: 'Revision'
-        required: false
-        default: ''
-        
-  repository_dispatch:
-    inputs:
-      revision:
-        description: 'Revision'
-        required: false
-        default: ''
-
+  push:
+    tags:
+    - '[0-9]+\.[0-9]+\.[0-9]+' # any tag that looks like a release version, ex. 3.6.0
 concurrency: 
-  group: Snapshot Build
+  group: Release Build
   cancel-in-progress: true
 
 jobs:
-
-  cleanup_previous_builds: # Delete unfinished draft prereleases, and prereleases older than 30 days (but keep at least 10)
-    name: Cleanup Previous Builds
-    runs-on: ubuntu-latest
-    steps:
-
-      - uses: actions/github-script@v3
-        with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            // Get a list of all releases, sorted newest first
-            let releases =
-              (await github.paginate(
-                github.repos.listReleases,
-                {
-                  owner: context.repo.owner,
-                  repo: context.repo.repo
-                }))
-                .sort((a,b) => b.created_at.localeCompare(a.created_at));
-            
-            let releaseCount = 0;
-            let releasesToDelete = [];
-            // Initiate deletion of draft prereleases
-            for (const release of releases)
-            {
-              // Only cleanup prereleases
-              if (!release.prerelease)
-                continue;
-              // Failed builds leave drafts - delete them
-              if (release.draft)
-              {
-                console.log("Will delete draft prerelease: " + release.tag_name);
-                releasesToDelete.push(release.id);
-                continue;
-              }
-              
-              // Keep at least 10, no matter how old
-              if (++releaseCount <= 20)
-                continue;
-              
-              // We have more than 10 releases - delete those more than 30 days old
-              let daysAgo = Math.floor((new Date() - Date.parse(release.created_at)) / 1000 / 60 / 60 / 24);
-              if (daysAgo <= 15)
-                continue;
-              
-              console.log("Will delete old prerelease: " + release.tag_name);
-              releasesToDelete.push(release.id);
-            }
-            if (releasesToDelete.length)
-            {
-              let promises = [];
-              for (const id of releasesToDelete)
-              {
-                promises.push(
-                  github.repos.deleteRelease(
-                    {
-                      owner: context.repo.owner,
-                      repo: context.repo.repo,
-                      release_id: id
-                    }));
-              }
-              
-              console.log("Waiting for deletions to complete");
-              await Promise.all(promises);
-            }
-            console.log("Done.");
   create_release:
     name: Create Draft Release
-    needs: cleanup_previous_builds
     runs-on: ubuntu-latest
     outputs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
       release_id: ${{ steps.create_release.outputs.id }}
     steps:
-
-      - name: Get revision
-        run: |
-          echo "revision=$(svn info --show-item revision svn://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }})" >> $GITHUB_ENV
       - name: Create Release
         id: create_release
-        uses: actions/create-release@v1
+        uses: actions/github-script@v6
         env:
-          GITHUB_TOKEN: ${{ secrets.WF }}
+          TAG_NAME: ${{ github.ref }}
+          RELEASE_NAME: ${{ github.ref }}
         with:
-          tag_name: r${{ env.revision }}
-          release_name: r${{ env.revision }}
-          draft: true
-          prerelease: true
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          retries: 3
+          script: |
+            const { TAG_NAME, RELEASE_NAME } = process.env;
+            const createReleaseResponse = await github.rest.repos.createRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: TAG_NAME.replace('refs/tags/', ''),
+              name: RELEASE_NAME.replace('refs/tags/', ''),
+              draft: true,
+              prerelease: false,
+              target_commitish: context.sha
+            });
+            core.setOutput('release_id', createReleaseResponse.data.id);
+            core.setOutput('upload_url', createReleaseResponse.data.upload_url);
 
   build_doc:
-    name: Test Headless, Build Documentation
-    needs: create_release
-    runs-on: ubuntu-20.04
-   
+    runs-on: ubuntu-latest
+
     steps:
+      - shell: bash
+        run: git config --global core.autocrlf input
 
       - name: Install Dependencies
         shell: bash
         run: |
-          sudo apt-get update
-          sudo apt-get install autoconf automake build-essential byacc flex xa65 dos2unix
-          sudo apt-get install texinfo texlive-fonts-recommended texlive-latex-extra libpcap-dev
-          
+          sudo apt update
+          sudo apt-get -y install autoconf automake build-essential byacc flex xa65 dos2unix
+          sudo apt-get -y install texinfo texlive-fonts-recommended texlive-latex-extra libpcap-dev
+
   build:
     name: Build
     needs: [create_release, build_doc]
     runs-on: windows-latest
     strategy:
       fail-fast: false
-        
+      matrix:
+        arch:
+        - { msystem: MINGW64, arch: x86_64 }
+        ui: [ GTK3 ]
     steps:
-    
-      - name: Install GTK3 Dependencies
+      - run: git config --global core.autocrlf input
+        shell: bash
+
+      - name: Checkout Source
+        uses: actions/checkout@v3
+
+      - name: Extract Github Actions Build Script
+        shell: bash
+        run: |
+          mv vice/build/github-actions/build-msys2.sh .
+          mv vice/build/github-actions/build-shared.sh .
+
+      - name: Install GTK3 Dependencies if Applicable
+        if: ${{ matrix.ui == 'GTK3' }}
         uses: msys2/setup-msys2@v2
         with:
-          msystem: MINGW64
+          msystem: ${{ matrix.arch.msystem }}
           update: true
           install: >-
             git
             base-devel
             autotools
-            mingw-w64-x86_64-toolchain
+            mingw-w64-${{ matrix.arch.arch }}-toolchain
+            unzip
             zip
             p7zip
             subversion
-            mingw-w64-x86_64-pkg-config
-            mingw-w64-x86_64-ntldd
-            mingw-w64-x86_64-glew
-            mingw-w64-x86_64-giflib
-            mingw-w64-x86_64-lame
-            mingw-w64-x86_64-libvorbis
-            mingw-w64-x86_64-flac
-            mingw-w64-x86_64-icoutils
-            mingw-w64-x86_64-gtk3
-            mingw-w64-x86_64-libpcap
-
-      - name: SVN Checkout Source
-        id: checkout
-        shell: bash
-        run: |
-         svn log -l 5 svn://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }}
-         svn checkout svn://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }} vice
+            git
+            mingw-w64-${{ matrix.arch.arch }}-pkg-config
+            mingw-w64-${{ matrix.arch.arch }}-ntldd
+            mingw-w64-${{ matrix.arch.arch }}-glew
+            mingw-w64-${{ matrix.arch.arch }}-giflib
+            mingw-w64-${{ matrix.arch.arch }}-lame
+            mingw-w64-${{ matrix.arch.arch }}-libvorbis
+            mingw-w64-${{ matrix.arch.arch }}-flac
+            mingw-w64-${{ matrix.arch.arch }}-icoutils
+            mingw-w64-${{ matrix.arch.arch }}-libpcap
+            mingw-w64-${{ matrix.arch.arch }}-libusb
+            mingw-w64-${{ matrix.arch.arch }}-curl
+            mingw-w64-${{ matrix.arch.arch }}-gtk3
 
       - name: Build
         id: build
         shell: msys2 {0}
         run: |
-          XA_VERSION=$(wget --tries=1 -O - https://www.floodgap.com/retrotech/xa/dists/ 2>/dev/null | grep '"xa-[^"]*gz"' | sed -e 's,.*xa-,,' -e 's,.tar.gz.*,,' | sort -V | tail -n1)
-          if [ ! -e /usr/local/bin/xa65.exe ]
-          then
-              pushd /usr/local
-              mkdir -p src
-              cd src
-              wget https://www.floodgap.com/retrotech/xa/dists/xa-${XA_VERSION}.tar.gz
-              tar -xzf xa-${XA_VERSION}.tar.gz
-              cd xa-${XA_VERSION}
-              make mingw install
-              cp /usr/local/bin/xa.exe /usr/local/bin/xa65.exe
-              popd
-          fi
-          if [ ! -f mingw-w64-x86_64-ffmpeg-4.4-9-any.pkg.tar.zst ]
-          then
-          wget https://mirror.cs.jmu.edu/pub/msys2/mingw/mingw64/mingw-w64-x86_64-ffmpeg-4.4-9-any.pkg.tar.zst
-          fi
-          if [ ! -f mingw-w64-x86_64-celt-0.11.3-5-any.pkg.tar.zst ]
-          then
-          wget https://mirror.cs.jmu.edu/pub/msys2/mingw/mingw64/mingw-w64-x86_64-celt-0.11.3-5-any.pkg.tar.zst
-          fi
-          pacman -U --noconfirm mingw-w64-x86_64-ffmpeg-4.4-9-any.pkg.tar.zst mingw-w64-x86_64-celt-0.11.3-5-any.pkg.tar.zst
-          ARGS="--disable-arch --disable-pdf-docs --with-png --with-gif --with-vorbis --with-flac --enable-ethernet --enable-midi --enable-cpuhistory --enable-platformdox --enable-html-docs --enable-rs232 --enable-new8580filter --with-resid --enable-x64 --enable-x64-image --enable-realdevice --enable-ffmpeg"
-          ARGS="--enable-native-gtk3ui $ARGS"
-          #ARGS="--enable-sdlui2 $ARGS"
-          export USE_SVN_REVISION=1
-          cd vice
-          sed -i "s/The %s Emulator/𝓩𝓲𝓫𝓻𝓲'𝓼 𝓑𝓾𝓲𝓵𝓭./" src/arch/gtk3/uiabout.c
-          ./autogen.sh
-          ./configure $ARGS
-          sync
-          make -j8 && make bindist7zip
+          MINGW_INSTALLS=${{ matrix.arch.msystem }} my_build.sh ${{ matrix.ui }} "release"
+          echo ::set-output name=seven_zip_path::$(cygpath -w -a vice/*.7z)
+          echo ::set-output name=seven_zip_name::$(basename vice/*.7z)
 
-          echo ::set-output name=zip_path::$(cygpath -w -a vice/*.7z)
-          echo ::set-output name=zip_name::$(basename vice/*.7z)
-      - name: Upload
-        id: upload
-        uses: actions/upload-release-asset@v1
+      - name: Upload 7Zip
+        id: upload-7zip
+        uses: actions/github-script@v6
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          UPLOAD_URL: ${{ needs.create_release.outputs.upload_url }}
+          ASSET_PATH: ${{ steps.build.outputs.seven_zip_path }}
+          ASSET_NAME: ${{ steps.build.outputs.seven_zip_name }}
+          ASSET_CONTENT_TYPE: application/x-7z-compressed
         with:
-          upload_url: ${{ needs.create_release.outputs.upload_url }}
-          asset_path: ${{ steps.build.outputs.zip_path }}
-          asset_name: ${{ steps.build.outputs.zip_name }}
-          asset_content_type: application/x-7z-compressed
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          retries: 3
+          script: |
+            const fs = require('fs');
+            const { UPLOAD_URL, ASSET_PATH, ASSET_NAME, ASSET_CONTENT_TYPE } = process.env;
+            const uploadAssetResponse = await github.rest.repos.uploadReleaseAsset({
+              url: UPLOAD_URL,
+              headers: {
+                'content-type': ASSET_CONTENT_TYPE,
+                'content-length': fs.statSync(ASSET_PATH).size
+              },
+              name: ASSET_NAME,
+              data: fs.readFileSync(ASSET_PATH)
+            });
+
+  build_deb:
+    name: Build Debian Package
+    needs: [create_release, build_doc]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+         ui: [ { name: 'GTK3',
+                  conf: '--enable-gtk3ui --with-pulse --enable-x64 --enable-x64-image --enable-realdevice --enable-ffmpeg',
+                  deps: 'libglew-dev libgtk-3-dev libpulse-dev' },
+          } ]
+    steps:
+      - shell: bash
+        run: git config --global core.autocrlf input
+
+      - name: Checkout Source
+        uses: actions/checkout@v3
+
+      - name: Install Dependencies
+        shell: bash
+        run: |
+          sudo apt update
+          sudo apt install -y autoconf automake build-essential byacc devscripts dos2unix fakeroot flex xa65
+          sudo apt install -y libasound-dev libflac-dev libgif-dev libmp3lame-dev libmpg123-dev libpcap-dev libvorbis-dev libcurl4-openssl-dev
+          sudo apt install -y ${{ matrix.ui.deps }}
+
+      - name: Build
+        shell: bash
+        run: |
+          mkdir -p build/usr
+          cd vice
+          ./src/buildtools/genvicedate_h.sh
+          ./autogen.sh
+          # ALSA is required for SDL2 as well for midi support
+          ./configure --enable-option-checking=fatal --prefix=/usr --enable-arch=no --enable-ethernet --disable-pdf-docs --disable-html-docs --with-fastsid --with-resid --enable-cpuhistory --with-gif --with-png --with-vorbis --with-flac --with-mpg123 --with-lame --enable-midi --with-alsa --with-libcurl ${{ matrix.ui.conf }}
+          make -j2 -s --no-print-directory
+          # Use install-strip, we want stripped binaries for point releases
+          make DESTDIR=$HOME/build install-strip
+
+      - name: Make Deb
+        id: make_deb
+        shell: bash
+        run: ./vice/build/github-actions/build-deb.sh ${{ matrix.ui.name }} release
+
+      - name: Upload Deb
+        id: upload_deb
+        uses: actions/github-script@v6
+        env:
+          UPLOAD_URL: ${{ needs.create_release.outputs.upload_url }}
+          ASSET_PATH: ${{ steps.make_deb.outputs.deb_path }}
+          ASSET_NAME: ${{ steps.make_deb.outputs.deb_name }}
+          ASSET_CONTENT_TYPE: application/vnd.debian.binary-package
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          retries: 3
+          script: |
+            const fs = require('fs');
+            const { UPLOAD_URL, ASSET_PATH, ASSET_NAME, ASSET_CONTENT_TYPE } = process.env;
+            const uploadAssetResponse = await github.rest.repos.uploadReleaseAsset({
+              url: UPLOAD_URL,
+              headers: {
+                'content-type': ASSET_CONTENT_TYPE,
+                'content-length': fs.statSync(ASSET_PATH).size
+              },
+              name: ASSET_NAME,
+              data: fs.readFileSync(ASSET_PATH)
+            });
 
   publish_release:
     name: Publish Release
     needs: [create_release, build]
     runs-on: ubuntu-latest
-    
     steps:
-      - name: Get revision
-        run: |
-          echo -e '### Changelog:\n\n```text' >revbody.txt
-          svn log -l 5 svn://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }} | sed -e '2,$!d' >>revbody.txt
-          echo -e '```' >>revbody.txt
-          for a in $(curl -qs https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/main.yml/runs|grep -B 1 "Manual And Scheduled Build"|grep id|tr -d " ,"|cut -d ":" -f 2);do curl -qs -X DELETE -H "Accept: application/vnd.github.v3+json" -H "Authorization: token ${{ secrets.WF }} " "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/runs/$a";done
-      - uses: actions/github-script@v3
-                 
+      - uses: actions/github-script@v6
         with:
-          github-token: ${{secrets.WF}} # ${{secrets.GITHUB_TOKEN}}
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          retries: 3
           script: |
-            fs=require("fs");
-            github.repos.updateRelease(
+            await github.rest.repos.updateRelease(
               {
-                owner: context.repo.owner, 
+                owner: context.repo.owner,
                 repo: context.repo.repo,
-                body: fs.readFileSync('revbody.txt', 'utf8').toString(),
                 release_id: ${{ needs.create_release.outputs.release_id }},
-                draft: false,
-                prerelease: false,
-                release: true
+                draft: false
               });
-              
