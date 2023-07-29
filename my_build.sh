@@ -54,6 +54,7 @@ SDL2)
     ;;
 esac
 
+pushd
 cd vice
 sed -i "s/The %s Emulator/𝓩𝓲𝓫𝓻𝓲'𝓼 𝓑𝓾𝓲𝓵𝓭./" src/arch/gtk3/uiabout.c
 ./autogen.sh
@@ -63,4 +64,4 @@ export USE_SVN_REVISION=1
 make -j8 clean
 sync
 make -j8 && make bindist7zip
-
+popd
