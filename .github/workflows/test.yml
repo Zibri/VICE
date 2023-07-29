@@ -78,17 +78,12 @@ jobs:
         - { msystem: MINGW64, arch: x86_64 }
         ui: [ GTK3 ]
     steps:
-      - run: git config --global core.autocrlf input
-        shell: bash
-
       - name: Checkout Source
         uses: actions/checkout@v3
-
-      - name: Extract Github Actions Build Script
+      - run: |
+          git config --global core.autocrlf input
+          svn checkout https://svn.code.sf.net/p/vice-emu/code/trunk/vice vice
         shell: bash
-        run: |
-          mv vice/build/github-actions/build-msys2.sh .
-          mv vice/build/github-actions/build-shared.sh .
 
       - name: Install GTK3 Dependencies if Applicable
         if: ${{ matrix.ui == 'GTK3' }}
