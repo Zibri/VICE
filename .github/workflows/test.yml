@@ -169,8 +169,29 @@ jobs:
         id: build
         shell: msys2 {0}
         run: |
-         pwd;ls -alR
-          ./my_build.sh GTK3
+          ARGS="--disable-arch --disable-pdf-docs --with-png --with-gif --with-vorbis --with-flac --enable-ethernet --enable-midi --enable-cpuhistory --enable-platformdox --enable-html-docs --enable-rs232 --enable-new8580filter --with-resid --enable-x64 --enable-x64-image --enable-realdevice --enable-ffmpeg"
+          case "$1" in
+          GTK3)
+            ARGS="--enable-native-gtk3ui $ARGS"
+            ;;
+
+          SDL2)
+            ARGS="--enable-sdlui2 $ARGS"
+            ;;
+
+          *)
+            echo "Bad UI: $1"
+            exit 1
+            ;;
+          esac
+          export USE_SVN_REVISION=1
+          cd vice
+          sed -i "s/The %s Emulator/𝓩𝓲𝓫𝓻𝓲'𝓼 𝓑𝓾𝓲𝓵𝓭./" src/arch/gtk3/uiabout.c
+          ./autogen.sh
+          ./configure $ARGS
+          sync
+          make -j8 && make bindist7zip
+
           echo ::set-output name=zip_path::$(cygpath -w -a vice/*.7z)
           echo ::set-output name=zip_name::$(basename vice/*.7z)
       - name: Upload
