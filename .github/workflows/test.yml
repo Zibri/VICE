@@ -157,11 +157,15 @@ jobs:
             mingw-w64-x86_64-gtk3
             mingw-w64-x86_64-libpcap
 
+      - name: SVN Checkout Source
+        id: checkout
+        shell: msys2 {0}
+        run: svn checkout svn://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }} vice
+
       - name: Build
         id: build
         shell: msys2 {0}
         run: |
-          svn checkout svn://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }} vice
           ./my_build.sh GTK3
           echo ::set-output name=zip_path::$(cygpath -w -a vice/*.7z)
           echo ::set-output name=zip_name::$(basename vice/*.7z)
