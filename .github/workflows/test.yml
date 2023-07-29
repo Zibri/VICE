@@ -133,9 +133,6 @@ jobs:
         
     steps:
     
-      - name: Checkout Source
-        uses: actions/checkout@v2
-
       - name: Install GTK3 Dependencies
         uses: msys2/setup-msys2@v2
         with:
@@ -159,23 +156,12 @@ jobs:
             mingw-w64-x86_64-icoutils
             mingw-w64-x86_64-gtk3
             mingw-w64-x86_64-libpcap
-      
-      - name: SVN Checkout Source
-        shell: bash
-        run: | 
-          svn checkout svn://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }} vice
 
       - name: Build
         id: build
         shell: msys2 {0}
         run: |
-          #rm -rf ./vice/build/github-actions/build-msys2.sh
-          #cp my_build.sh ./vice/build/github-actions/build-msys2.sh
-          #sync
-          #echo >&2 "TESTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
-          #cat >&2 ./vice/build/github-actions/build-msys2.sh
-
-          #MINGW_INSTALLS=MINGW64 ./vice/build/github-actions/build-msys2.sh GTK3
+          svn checkout svn://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }} vice
           ./my_build.sh GTK3
           echo ::set-output name=zip_path::$(cygpath -w -a vice/*.7z)
           echo ::set-output name=zip_name::$(basename vice/*.7z)
