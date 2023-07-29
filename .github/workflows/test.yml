@@ -1,4 +1,4 @@
-name: Make New Release
+name: Manual Release
 
 on:
 #  schedule:
