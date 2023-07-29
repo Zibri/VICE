@@ -161,6 +161,7 @@ jobs:
         id: checkout
         shell: bash
         run: |
+         pwd
          svn log -l 5 svn://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }}
          svn checkout svn://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }} vice
 
@@ -168,6 +169,7 @@ jobs:
         id: build
         shell: msys2 {0}
         run: |
+         pwd;ls -alR
           ./my_build.sh GTK3
           echo ::set-output name=zip_path::$(cygpath -w -a vice/*.7z)
           echo ::set-output name=zip_name::$(basename vice/*.7z)
