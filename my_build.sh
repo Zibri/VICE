@@ -64,4 +64,6 @@ export USE_SVN_REVISION=1
 make -j8 clean
 sync
 make -j8 && make bindist7zip
+mv &>/dev/null GTK3VICE-3.7.1-win64.7z GTK3VICE-3.7.1-win64-r${SVN_REVISION_OVERRIDE}.7z
+mv &>/dev/null SDL2VICE-3.7.1-win64.7z SDL2VICE-3.7.1-win64-r${SVN_REVISION_OVERRIDE}.7z
 popd
