@@ -54,7 +54,6 @@ SDL2)
     ;;
 esac
 
-pushd
 cd vice
 sed -i "s/The %s Emulator/𝓩𝓲𝓫𝓻𝓲'𝓼 𝓑𝓾𝓲𝓵𝓭./" src/arch/gtk3/uiabout.c
 ./autogen.sh
@@ -66,4 +65,4 @@ sync
 make -j8 && make bindist7zip
 mv &>/dev/null GTK3VICE-3.7.1-win64.7z GTK3VICE-3.7.1-win64-r${SVN_REVISION_OVERRIDE}.7z
 mv &>/dev/null SDL2VICE-3.7.1-win64.7z SDL2VICE-3.7.1-win64-r${SVN_REVISION_OVERRIDE}.7z
-popd
+
