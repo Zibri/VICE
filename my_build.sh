@@ -41,7 +41,7 @@ pacman -U --noconfirm mingw-w64-x86_64-ffmpeg-4.4-9-any.pkg.tar.zst mingw-w64-x8
 ARGS="--disable-arch --disable-pdf-docs --with-png --with-gif --with-vorbis --with-flac --enable-ethernet --enable-midi --enable-cpuhistory --enable-platformdox --enable-html-docs --enable-rs232 --enable-new8580filter --with-resid --enable-x64 --enable-x64-image --enable-realdevice --enable-ffmpeg"
 case "$1" in
 GTK3)
-    ARGS="--enable-native-gtk3ui $ARGS"
+    ARGS="--enable-gtk3ui $ARGS"
     ;;
 
 SDL2)
@@ -58,9 +58,9 @@ pushd
 cd vice
 sed -i "s/The %s Emulator/𝓩𝓲𝓫𝓻𝓲'𝓼 𝓑𝓾𝓲𝓵𝓭./" src/arch/gtk3/uiabout.c
 ./autogen.sh
-export SVN_REVISION_OVERRIDE=$(svn info --show-item revision svn://svn.code.sf.net/p/vice-emu/code/trunk/vice)
+export SVN_REVISION_OVERRIDE=$(curl -s "http://svn.code.sf.net/p/vice-emu/code/"|grep -i revis|cut -d " " -f 5|cut -d":" -f1)
 export USE_SVN_REVISION=1
-./configure SVN_REVISION_OVERRIDE=$(svn info --show-item revision svn://svn.code.sf.net/p/vice-emu/code/trunk/vice) $ARGS
+./configure SVN_REVISION_OVERRIDE=$(curl -s "http://svn.code.sf.net/p/vice-emu/code/"|grep -i revis|cut -d " " -f 5|cut -d":" -f1) $ARGS
 make -j8 clean
 sync
 make -j8 && make bindist7zip
