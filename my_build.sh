@@ -54,7 +54,6 @@ SDL2)
     ;;
 esac
 
-cd vice
 sed -i "s/The %s Emulator/𝓩𝓲𝓫𝓻𝓲'𝓼 𝓑𝓾𝓲𝓵𝓭./" src/arch/gtk3/uiabout.c
 ./autogen.sh
 export SVN_REVISION_OVERRIDE=$(curl -s "http://svn.code.sf.net/p/vice-emu/code/"|grep -i revis|cut -d " " -f 5|cut -d":" -f1)
