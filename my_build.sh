@@ -54,16 +54,13 @@ SDL2)
     ;;
 esac
 
-alias svn='curl -s "http://svn.code.sf.net/p/vice-emu/code/"|grep -i revis|cut -d " " -f 5|cut -d" " -f3|tail -n 1|cut -d ":" -f 1'
-alias svnversion=svn
-
 sed -i "s/The %s Emulator/𝓩𝓲𝓫𝓻𝓲'𝓼 𝓑𝓾𝓲𝓵𝓭./" src/arch/gtk3/uiabout.c
 ./autogen.sh
+export SVN_REVISION_OVERRIDE=$(curl -s "http://svn.code.sf.net/p/vice-emu/code/"|grep -i revis|cut -d " " -f 5|cut -d" " -f3|tail -n 1|cut -d ":" -f 1)
 export USE_SVN_REVISION=1
-./configure $ARGS
+./configure SVN_REVISION_OVERRIDE=$(curl -s "http://svn.code.sf.net/p/vice-emu/code/"|grep -i revis|cut -d " " -f 5|cut -d" " -f3|tail -n 1|cut -d ":" -f 1) $ARGS
 make -j8 clean
 sync
 make -j8 && make bindist7zip
-#mv &>/dev/null GTK3VICE-3.7.1-win64.7z GTK3VICE-3.7.1-win64-r${SVN_REVISION_OVERRIDE}.7z || true
-#mv &>/dev/null SDL2VICE-3.7.1-win64.7z SDL2VICE-3.7.1-win64-r${SVN_REVISION_OVERRIDE}.7z || true
-
+mv &>/dev/null GTK3VICE-3.7.1-win64.7z GTK3VICE-3.7.1-win64-r${SVN_REVISION_OVERRIDE}.7z || true
+mv &>/dev/null SDL2VICE-3.7.1-win64.7z SDL2VICE-3.7.1-win64-r${SVN_REVISION_OVERRIDE}.7z || true
