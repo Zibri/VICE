@@ -61,7 +61,7 @@ export USE_SVN_REVISION=1
 ./configure SVN_REVISION_OVERRIDE=$(curl -s "http://svn.code.sf.net/p/vice-emu/code/"|grep -i revis|cut -d " " -f 5|cut -d" " -f3|tail -n 1|cut -d ":" -f 1) $ARGS
 make -j8 clean
 sync
-sed -i 's/svnversion \$TOPSRCDIR/$SVN_REVISION_OVERRIDE/g' src/arch/gtk3/make-bindist_win32.sh
+sed -i "s/svnversion \$TOPSRCDIR/$SVN_REVISION_OVERRIDE/g" src/arch/gtk3/make-bindist_win32.sh
 make -j8 && make bindist7zip
-#mv &>/dev/null GTK3VICE-3.7.1-win64.7z GTK3VICE-3.7.1-win64-r${SVN_REVISION_OVERRIDE}.7z || true
+mv &>/dev/null GTK3VICE-3.7.1-win64.7z GTK3VICE-3.7.1-win64-r${SVN_REVISION_OVERRIDE}.7z || true
 #mv &>/dev/null SDL2VICE-3.7.1-win64.7z SDL2VICE-3.7.1-win64-r${SVN_REVISION_OVERRIDE}.7z || true
