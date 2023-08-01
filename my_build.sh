@@ -54,9 +54,14 @@ SDL2)
     ;;
 esac
 
+export SVN_REVISION_OVERRIDE=$(curl -s "http://svn.code.sf.net/p/vice-emu/code/"|grep -i revis|cut -d " " -f 5|cut -d" " -f3|tail -n 1|cut -d ":" -f 1)
+fsvn() {
+echo $SVN_REVISION_OVERRIDE
+}
+alias svn=fsvn
+alias svnversion=fsvn
 sed -i "s/The %s Emulator/𝓩𝓲𝓫𝓻𝓲'𝓼 𝓑𝓾𝓲𝓵𝓭./" src/arch/gtk3/uiabout.c
 ./autogen.sh
-export SVN_REVISION_OVERRIDE=$(curl -s "http://svn.code.sf.net/p/vice-emu/code/"|grep -i revis|cut -d " " -f 5|cut -d" " -f3|tail -n 1|cut -d ":" -f 1)
 export USE_SVN_REVISION=1
 ./configure SVN_REVISION_OVERRIDE=$(curl -s "http://svn.code.sf.net/p/vice-emu/code/"|grep -i revis|cut -d " " -f 5|cut -d" " -f3|tail -n 1|cut -d ":" -f 1) $ARGS
 make -j8 clean
