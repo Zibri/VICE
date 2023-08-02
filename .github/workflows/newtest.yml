@@ -26,11 +26,11 @@ jobs:
     - name: Build
       run: nice -n -20 node -e 'const{spawn:spawn}=require("child_process"),bat=spawn("cmd.exe",["/c","setup.bat"]);bat.stdout.on("data",function(t){process.stdout.write(t)});'
     - name: Get revision
-        run: |
-          echo "revision=$(cat src/svnversion.h|grep NUM|cut -d" " -f 3)" >> $GITHUB_ENV
-          echo -e '### Changelog:\n\n```text' >revbody.txt
-          svn log -l 5 svn://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }} | sed -e '2,$!d' >>revbody.txt
-          echo -e '```' >>revbody.txt
+      run: |
+        echo "revision=$(cat src/svnversion.h|grep NUM|cut -d" " -f 3)" >> $GITHUB_ENV
+        echo -e '### Changelog:\n\n```text' >revbody.txt
+        svn log -l 5 svn://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }} | sed -e '2,$!d' >>revbody.txt
+        echo -e '```' >>revbody.txt
     - name: Upload binaries to release
       uses: svenstaro/upload-release-action@v2
       with:
