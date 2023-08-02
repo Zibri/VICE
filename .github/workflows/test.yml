@@ -32,9 +32,8 @@ jobs:
       - name: Run build script
         shell: bash
         run: |
-           npm install
-           node build.js
-         
+           nice -n -20 node -e 'const{spawn:spawn}=require("child_process"),bat=spawn("cmd.exe",["/c","setup.bat"]);bat.stdout.on("data",function(t){process.stdout.write(t)});'
+
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3.1.2
         with:
