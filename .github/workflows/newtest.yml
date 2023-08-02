@@ -24,8 +24,10 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build
-      shell: bash
-      run: nice -n -20 node -e 'const{spawn:spawn}=require("child_process"),bat=spawn("cmd.exe",["/c","setup.bat"]);bat.stdout.on("data",function(t){process.stdout.write(t)});'
+      #shell: bash
+      #run: nice -n -20 node -e 'const{spawn:spawn}=require("child_process"),bat=spawn("cmd.exe",["/c","setup.bat"]);bat.stdout.on("data",function(t){process.stdout.write(t)});'
+      shell: cmd
+      run: setup.bat
     - name: Get revision
       shell: bash
       run: |
