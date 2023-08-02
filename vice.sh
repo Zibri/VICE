@@ -21,8 +21,6 @@ rm -rf src
 
 svn checkout svn://svn.code.sf.net/p/vice-emu/code/trunk/vice vice
 
-ls -alR
-
 export USE_SVN_REVISION=1
 
 cd vice
