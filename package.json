@@ -1,0 +1,10 @@
+{
+  "name": "build",
+  "version": "1.0.0",
+  "description": "setup msys2 and build VICE",
+  "main": "build.js",
+  "author": "Zibri",
+  "dependencies": {
+    "node-pty": "^1.0.0"
+  }
+}
