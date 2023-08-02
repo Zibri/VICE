@@ -26,10 +26,10 @@ then
     popd
 fi
 
-if [ ! -f mingw-w64-x86_64-ffmpeg-4.4.3-6-any.pkg.tar.zst ]
-then
-wget https://mirror.cs.jmu.edu/pub/msys2/mingw/mingw64/mingw-w64-x86_64-ffmpeg-4.4.3-6-any.pkg.tar.zst
-fi
+#if [ ! -f mingw-w64-x86_64-ffmpeg-4.4.3-6-any.pkg.tar.zst ]
+#then
+#wget https://mirror.cs.jmu.edu/pub/msys2/mingw/mingw64/mingw-w64-x86_64-ffmpeg-4.4.3-6-any.pkg.tar.zst
+#fi
 
 if [ ! -f mingw-w64-x86_64-celt-0.11.3-5-any.pkg.tar.zst ]
 then
@@ -55,11 +55,7 @@ SDL2)
 esac
 
 export SVN_REVISION_OVERRIDE=$(curl -s "http://svn.code.sf.net/p/vice-emu/code/"|grep -i revis|cut -d " " -f 5|cut -d" " -f3|tail -n 1|cut -d ":" -f 1)
-fsvn() {
-echo $SVN_REVISION_OVERRIDE
-}
-alias svn=fsvn
-alias svnversion=fsvn
+export PATH="/c/Program Files/TortoiseSVN/bin:$PATH"
 sed -i "s/The %s Emulator/𝓩𝓲𝓫𝓻𝓲'𝓼 𝓑𝓾𝓲𝓵𝓭./" src/arch/gtk3/uiabout.c
 ./autogen.sh
 export USE_SVN_REVISION=1
