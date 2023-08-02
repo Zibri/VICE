@@ -37,6 +37,7 @@ jobs:
              c:\msysz\usr\bin\bash.exe --login -c "pacman -Suy"
              c:\msysz\usr\bin\bash.exe --login -c "pacman -Suy"
              copy vice.sh C:\msysz\home\runneradmin\
+             set MSYSTEM=MINGW64
              c:\msysz\usr\bin\bash.exe --login vice.sh
 
       - name: Upload a Build Artifact
