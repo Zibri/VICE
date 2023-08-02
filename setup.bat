@@ -4,4 +4,4 @@ msysz.exe install --root C:\msysz --confirm-command
 c:\msysz\usr\bin\bash.exe --login -c "pacman -Suy --noconfirm"
 c:\msysz\usr\bin\bash.exe --login -c "pacman -Suy --noconfirm git base-devel autotools mingw-w64-x86_64-toolchain zip p7zip subversion git mingw-w64-x86_64-pkg-config mingw-w64-x86_64-ntldd mingw-w64-x86_64-glew mingw-w64-x86_64-giflib mingw-w64-x86_64-lame mingw-w64-x86_64-libvorbis mingw-w64-x86_64-flac mingw-w64-x86_64-icoutils mingw-w64-x86_64-gtk3  mingw-w64-x86_64-SDL2_image mingw-w64-x86_64-ffmpeg4.4 msys/libpcap-devel mingw64/mingw-w64-x86_64-libpcap autotools"
 copy vice.sh c:\users\runneradmin\
-c:\msysz\usr\bin\bash.exe --login vice.sh
+c:\msysz\usr\bin\bash.exe --login /c/users/runneradmin/vice.sh
