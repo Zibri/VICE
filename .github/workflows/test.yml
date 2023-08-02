@@ -1,0 +1,51 @@
+name: Test Compile
+
+on:
+
+  workflow_dispatch:
+    inputs:
+      revision:
+        description: 'Revision'
+        required: false
+        default: ''
+        
+  repository_dispatch:
+    inputs:
+      revision:
+        description: 'Revision'
+        required: false
+        default: ''
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: windows-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+    # Runs a single command using the runners shell
+      - name: Run a one-line script
+        shell: cmd
+        run: |
+             curl -L "https://repo.msys2.org/distrib/x86_64/msys2-x86_64-20220128.exe" -o msysz.exe
+             msysz.exe install --root C:\msysz --confirm-command
+             c:\msysz\usr\bin\bash.exe --login -c "pacman -Suy"
+             c:\msysz\usr\bin\bash.exe --login -c "pacman -Suy"
+             c:\msysz\usr\bin\bash.exe --login -c "pacman -Suy --noconfirm git base-devel autotools mingw-w64-x86_64-toolchain zip p7zip subversion git mingw-w64-x86_64-pkg-config mingw-w64-x86_64-ntldd mingw-w64-x86_64-glew mingw-w64-x86_64-giflib mingw-w64-x86_64-lame mingw-w64-x86_64-libvorbis mingw-w64-x86_64-flac mingw-w64-x86_64-icoutils mingw-w64-x86_64-gtk3  mingw-w64-x86_64-SDL2_image mingw-w64-x86_64-ffmpeg4.4 msys/libpcap-devel mingw64/mingw-w64-x86_64-libpcap autotools"
+             cp vice.sh c:\users\runneradmin\
+             c:\msysz\usr\bin\bash.exe --login vice.sh
+
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          path:  vice/*.7z
+
+      # Runs a set of commands using the runners shell
+      - name: Run a multi-line script
+        run: |
+          echo Done.
