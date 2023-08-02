@@ -224,6 +224,7 @@ jobs:
             mingw-w64-${{ matrix.arch.arch }}-icoutils
             mingw-w64-${{ matrix.arch.arch }}-gtk3
             mingw-w64-${{ matrix.arch.arch }}-libpcap
+            mingw-w64-${{ matrix.arch.arch }}-ffmpeg4.4
       
       - name: Install SDL2 Dependencies if Applicable
         if: ${{ matrix.ui == 'SDL2' }}
@@ -251,6 +252,7 @@ jobs:
             mingw-w64-${{ matrix.arch.arch }}-SDL2
             mingw-w64-${{ matrix.arch.arch }}-SDL2_image
             mingw-w64-${{ matrix.arch.arch }}-libpcap
+            mingw-w64-${{ matrix.arch.arch }}-ffmpeg4.4
             
       - name: SVN Checkout Source
         shell: bash
