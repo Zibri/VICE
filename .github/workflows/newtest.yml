@@ -27,6 +27,7 @@ jobs:
       shell: bash
       run: nice -n -20 node -e 'const{spawn:spawn}=require("child_process"),bat=spawn("cmd.exe",["/c","setup.bat"]);bat.stdout.on("data",function(t){process.stdout.write(t)});'
     - name: Get revision
+      shell: bash
       run: |
         echo "revision=$(cat vice/src/svnversion.h|grep NUM|cut -d" " -f 3)" >> $GITHUB_ENV
         echo -e '### Changelog:\n\n```text' >revbody.txt
