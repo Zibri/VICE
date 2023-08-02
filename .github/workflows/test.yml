@@ -34,7 +34,6 @@ jobs:
         run: |
              curl -L "https://repo.msys2.org/distrib/x86_64/msys2-x86_64-20220128.exe" -o msysz.exe
              msysz.exe install --root C:\msysz --confirm-command
-             c:\msysz\usr\bin\bash.exe --login -c "pacman -Suy || true"
              copy vice.sh C:\msysz\home\runneradmin\
              set MSYSTEM=MINGW64
              c:\msysz\usr\bin\bash.exe --login vice.sh
