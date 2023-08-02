@@ -26,10 +26,10 @@ then
     popd
 fi
 
-#if [ ! -f mingw-w64-x86_64-ffmpeg-4.4.3-6-any.pkg.tar.zst ]
-#then
-#wget https://mirror.cs.jmu.edu/pub/msys2/mingw/mingw64/mingw-w64-x86_64-ffmpeg-4.4.3-6-any.pkg.tar.zst
-#fi
+if [ ! -f mingw-w64-x86_64-ffmpeg-4.4.3-6-any.pkg.tar.zst ]
+then
+wget https://mirror.cs.jmu.edu/pub/msys2/mingw/mingw64/mingw-w64-x86_64-ffmpeg-4.4.3-6-any.pkg.tar.zst
+fi
 
 if [ ! -f mingw-w64-x86_64-celt-0.11.3-5-any.pkg.tar.zst ]
 then
