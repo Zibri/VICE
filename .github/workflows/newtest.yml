@@ -32,6 +32,7 @@ jobs:
       shell: bash
       run: |
         echo "revision=$(cat vice/src/svnversion.h|grep NUM|cut -d" " -f 3)" >> $GITHUB_ENV
+        echo "ff=$(ls vice/*.7z)" >> $GITHUB_ENV
         echo -e '### Changelog:\n\n```text' >revbody.txt
         svn log -l 5 svn://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }} | sed -e '2,$!d' >>revbody.txt
         echo -e '```' >>revbody.txt
@@ -39,8 +40,8 @@ jobs:
       uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
-        file: vice/*.7z
-        asset_name: $(ls vice/*.7z)
+        file: $GITHUB_WORKSPACE/$ff
+        asset_name: $(basename $ff)
         tag: r${{ env.revision }}
         overwrite: true
         body: fs.readFileSync('revbody.txt', 'utf8').toString()
