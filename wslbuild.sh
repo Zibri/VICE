@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sudo apt install -y autoconf automake build-essential byacc devscripts dos2unix fakeroot flex xa65 7zip
+sudo apt install -y autoconf automake build-essential byacc devscripts dos2unix fakeroot flex xa65 p7zip-full
 sudo apt install -y libasound-dev libflac-dev libgif-dev libmp3lame-dev libmpg123-dev libpcap-dev libvorbis-dev libcurl4-openssl-dev
 sudo apt install -y libglew-dev libgtk-3-dev libpulse-dev subversion libavfilter-dev libavformat-dev libavcodec-dev
 
