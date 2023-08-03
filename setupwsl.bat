@@ -6,4 +6,4 @@ wsl --user root -e apt update
 wsl --user root -e apt upgrade -y
 cd %GITHUB_WORKSPACE%
 wsl --user root -e ls -al
-wsl --user root -e bash -c ./wslbuild.sh
+wsl --user root ./wslbuild.sh
