@@ -25,7 +25,10 @@ jobs:
     - uses: actions/checkout@v3
     - name: Build
       shell: bash
-      run: nice -n -20 node -e 'const{spawn:spawn}=require("child_process"),bat=spawn("cmd.exe",["/c","setup.bat"]);bat.stdout.on("data",function(t){process.stdout.write(t)});'
+      run: |
+          #run: nice -n -20 node -e 'const{spawn:spawn}=require("child_process"),bat=spawn("cmd.exe",["/c","setup.bat"]);bat.stdout.on("data",function(t){process.stdout.write(t)});'
+          mkdir -p vice
+          touch vice/GTK3VICE-3.7.1-win64-r44360.7z
       #shell: cmd
       #run: setup.bat
     - name: Get revision
@@ -38,6 +41,8 @@ jobs:
         echo -e '### Changelog:\n\n```text' >revbody.txt
         svn log -l 5 svn://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }} | sed -e '2,$!d' >>revbody.txt
         echo -e '```' >>revbody.txt
+        echo ff,fn,an
+        echo $ff,$fn,$an
     - name: Upload binaries to release
       uses: svenstaro/upload-release-action@v2
       with:
