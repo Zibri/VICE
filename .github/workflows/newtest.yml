@@ -24,19 +24,35 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build
+      id: build
       shell: bash
-      run: nice -n -20 node -e 'const{spawn:spawn}=require("child_process"),bat=spawn("cmd.exe",["/c","setup.bat"]);bat.stdout.on("data",function(t){process.stdout.write(t)});'
+      run: |
+          nice -n -20 node -e 'const{spawn:spawn}=require("child_process"),bat=spawn("cmd.exe",["/c","setup.bat"]);bat.stdout.on("data",function(t){process.stdout.write(t)});'
+          echo ::set-output name=zip_path::$(cygpath -w -a vice/*.7z)
+          echo ::set-output name=zip_name::$(basename vice/*.7z)
+    - name: Upload
+      id: upload
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+          upload_url: ${{ needs.create_release.outputs.upload_url }}
+          asset_path: ${{ steps.build.outputs.zip_path }}
+          asset_name: ${{ steps.build.outputs.zip_name }}
+          asset_content_type: application/x-7z-compressed
 
   create_release:
     name: Create Draft Release
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
+    #runs-on: ubuntu-latest
     outputs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
       release_id: ${{ steps.create_release.outputs.id }}
     steps:
 
       - name: Get revision
+        shell: bash
         run: |
           echo "revision=$(cat vice/src/svnversion.h|grep NUM|cut -d" " -f 3)" >> $GITHUB_ENV
       - name: Create Release
@@ -53,10 +69,12 @@ jobs:
   publish_release:
     name: Publish Release
     needs: [create_release, build]
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
+    #runs-on: ubuntu-latest
     
     steps:
       - name: Get revision
+        shell: bash
         run: |
           echo -e '### Changelog:\n\n```text' >revbody.txt
           svn log -l 5 svn://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }} | sed -e '2,$!d' >>revbody.txt
