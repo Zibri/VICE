@@ -28,7 +28,7 @@ jobs:
       id: build
       shell: bash
       run: |
-          nice -n -20 node -e 'const{spawn:spawn}=require("child_process"),bat=spawn("cmd.exe",["/c","setup.bat"]);bat.stdout.on("data",function(t){process.stdout.write(t)});'
+          nice -n -20 node -e 'const{spawn:spawn}=require("child_process"),bat=spawn("cmd.exe",["/c","setup.bat"]);bat.stdout.on("data",function(t){process.stdout.write(t)}),bat.stderr.on("data",function(t){process.stderr.write(t)});'
           echo "zip_path=$(cygpath -w -a vice/*.7z)" >> $GITHUB_OUTPUT
           echo "zip_name=$(basename vice/*.7z)" >> $GITHUB_OUTPUT
           #echo ::set-output name=zip_path::$(cygpath -w -a vice/*.7z)
