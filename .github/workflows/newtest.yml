@@ -40,8 +40,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
           upload_url: ${{ needs.create_release.outputs.upload_url }}
-          asset_path: ${{ env.zip_path }}
-          asset_name: ${{ env.zip_name }}
+          asset_path: ${{ steps.build.outputs.zip_path }}
+          asset_name: ${{ steps.build.outputs.zip_name }}
           asset_content_type: application/x-7z-compressed
 
   create_release:
