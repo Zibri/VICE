@@ -19,6 +19,7 @@ on:
 jobs:
   build:
     name: Release
+    needs: create_release
     runs-on: windows-latest
 
     steps:
@@ -43,7 +44,6 @@ jobs:
 
   create_release:
     name: Create Draft Release
-    needs: build
     runs-on: windows-latest
     #runs-on: ubuntu-latest
     outputs:
@@ -54,7 +54,7 @@ jobs:
       - name: Get revision
         shell: bash
         run: |
-          echo "revision=$(cat vice/src/svnversion.h|grep NUM|cut -d" " -f 3)" >> $GITHUB_ENV
+          echo "revision=$(svn info --show-item revision svn://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }})" >> $GITHUB_ENV
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
