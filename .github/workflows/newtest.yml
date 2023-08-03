@@ -1,4 +1,4 @@
-name: New Test Compile
+name: Build And Release
 
 on:
 
@@ -18,7 +18,7 @@ on:
 
 jobs:
   build:
-    name: Release
+    name: Build
     needs: create_release
     runs-on: windows-latest
 
@@ -33,7 +33,7 @@ jobs:
           echo "zip_name=$(basename vice/*.7z)" >> $GITHUB_OUTPUT
           #echo ::set-output name=zip_path::$(cygpath -w -a vice/*.7z)
           #echo ::set-output name=zip_name::$(basename vice/*.7z)
-    - name: Upload
+    - name: Release
       id: upload
       uses: actions/upload-release-asset@v1
       env:
@@ -45,7 +45,7 @@ jobs:
           asset_content_type: application/x-7z-compressed
 
   create_release:
-    name: Create Draft Release
+    name: Prepare Release
     runs-on: windows-latest
 
     outputs:
@@ -80,7 +80,7 @@ jobs:
           echo -e '### Changelog:\n\n```text' >revbody.txt
           svn log -l 5 svn://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }} | sed -e '2,$!d' >>revbody.txt
           echo -e '```' >>revbody.txt
-          #for a in $(curl -qs https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/main.yml/runs|grep -B 1 "Manual And Scheduled Build"|grep id|tr -d " ,"|cut -d ":" -f 2);do curl -qs -X DELETE -H "Accept: application/vnd.github.v3+json" -H "Authorization: token ${{ secrets.WF }} " "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/runs/$a";done
+          for a in $(curl -qs https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/newtest.yml/runs|grep -B 1 "Build And Release"|grep id|tr -d " ,"|cut -d ":" -f 2);do curl -qs -X DELETE -H "Accept: application/vnd.github.v3+json" -H "Authorization: token ${{ secrets.WF }} " "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/runs/$a";done
       - uses: actions/github-script@v3
                  
         with:
