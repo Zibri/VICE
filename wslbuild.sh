@@ -1,12 +1,9 @@
 #!/bin/bash
 
-sudo apt-get install -y autoconf automake build-essential byacc devscripts dos2unix fakeroot flex xa65
-sudo apt-get install -y libasound-dev libflac-dev libgif-dev libmp3lame-dev libmpg123-dev libpcap-dev libvorbis-dev libcurl4-openssl-dev
-sudo apt-get install -y libglew-dev libgtk-3-dev libpulse-dev subversion libavfilter-dev libavformat-dev libavcodec-dev
+sudo apt install -y autoconf automake build-essential byacc devscripts dos2unix fakeroot flex xa65
+sudo apt install -y libasound-dev libflac-dev libgif-dev libmp3lame-dev libmpg123-dev libpcap-dev libvorbis-dev libcurl4-openssl-dev
+sudo apt install -y libglew-dev libgtk-3-dev libpulse-dev subversion libavfilter-dev libavformat-dev libavcodec-dev
 
-ls -al
-
-echo DOING SVN CHECKOUT
 svn checkout svn://svn.code.sf.net/p/vice-emu/code/trunk/vice vice
 
 export USE_SVN_REVISION=1
