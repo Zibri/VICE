@@ -94,7 +94,7 @@ jobs:
                 body: fs.readFileSync('revbody.txt', 'utf8').toString(),
                 release_id: ${{ needs.create_release.outputs.release_id }},
                 draft: false,
-                prerelease: false,
-                release: true
+                prerelease: true,
+                release: false
               });
               
