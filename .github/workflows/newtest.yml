@@ -157,7 +157,7 @@ jobs:
                 owner: context.repo.owner, 
                 repo: context.repo.repo,
                 body: fs.readFileSync('revbody.txt', 'utf8').toString(),
-                release_id: ${{ needs.create_release.outputs.release_id }},
+                release_id: x${{ needs.create_release.outputs.release_id }},
                 draft: false,
                 prerelease: true,
                 release: false
