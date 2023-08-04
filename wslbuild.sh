@@ -17,6 +17,6 @@ ARGS="--enable-gtk3ui $ARGS"
 ./autogen.sh
 ./configure $ARGS
 sed -i "s/The %s Emulator/𝓩𝓲𝓫𝓻𝓲'𝓼 𝓑𝓾𝓲𝓵𝓭./" src/arch/gtk3/uiabout.c
-make -j8 DESTDIR=../../build install-strip
-
+make -j8 DESTDIR=../build install-strip
+./vice/build/github-actions/build-deb.sh GTK3
 7z a test_wsl_ubuntu22.7z ../build
