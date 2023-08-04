@@ -18,6 +18,10 @@ ARGS="--enable-gtk3ui $ARGS"
 ./configure $ARGS
 sed -i "s/The %s Emulator/𝓩𝓲𝓫𝓻𝓲'𝓼 𝓑𝓾𝓲𝓵𝓭./" src/arch/gtk3/uiabout.c
 make -j8 DESTDIR=../build install-strip
+rev=$(svnversion)
 cd ..
 HOME=$PWD GITHUB_OUTPUT=/dev/null ./vice/build/github-actions/build-deb.sh GTK3
+f=$(ls *.deb)
+f=${f:0:-4}
+mv ${f}.deb ${f}_${rev}.deb
 #7z a test_wsl_ubuntu22.7z ../build
