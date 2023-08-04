@@ -3,6 +3,7 @@
 sudo apt install -y autoconf automake build-essential byacc devscripts dos2unix fakeroot flex xa65 p7zip-full
 sudo apt install -y libasound-dev libflac-dev libgif-dev libmp3lame-dev libmpg123-dev libpcap-dev libvorbis-dev libcurl4-openssl-dev
 sudo apt install -y libglew-dev libgtk-3-dev libpulse-dev subversion libavfilter-dev libavformat-dev libavcodec-dev
+sudo update-alternatives --set fakeroot /usr/bin/fakeroot-tcp
 
 svn checkout svn://svn.code.sf.net/p/vice-emu/code/trunk/vice vice
 
@@ -17,4 +18,5 @@ ARGS="--enable-gtk3ui $ARGS"
 ./configure $ARGS
 sed -i "s/The %s Emulator/𝓩𝓲𝓫𝓻𝓲'𝓼 𝓑𝓾𝓲𝓵𝓭./" src/arch/gtk3/uiabout.c
 make -j8 DESTDIR=../../build install-strip
+
 7z a test_wsl_ubuntu22.7z ../build
