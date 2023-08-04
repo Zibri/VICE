@@ -4,3 +4,6 @@ const bat = spawn('cmd.exe', ['/c','setup.bat']);
 bat.stdout.on('data', function (data) {
     process.stdout.write(data);
 });
+bat.stderr.on('data', function (data) {
+    process.stderr.write(data);
+});
