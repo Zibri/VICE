@@ -35,8 +35,6 @@ jobs:
       run: |
           echo "zip_path=$(cygpath -w -a vice/*.7z)" >> $GITHUB_OUTPUT
           echo "zip_name=$(basename vice/*.7z)" >> $GITHUB_OUTPUT
-          #echo ::set-output name=zip_path::$(cygpath -w -a vice/*.7z)
-          #echo ::set-output name=zip_name::$(basename vice/*.7z)
     - name: Release
       id: upload
       uses: actions/upload-release-asset@v1
@@ -44,8 +42,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
           upload_url: ${{ needs.create_release.outputs.upload_url }}
-          asset_path: ${{ steps.build.outputs.zip_path }}
-          asset_name: ${{ steps.build.outputs.zip_name }}
+          asset_path: ${{ steps.prep.outputs.zip_path }}
+          asset_name: ${{ steps.prep.outputs.zip_name }}
           asset_content_type: application/x-7z-compressed
 
   create_release:
