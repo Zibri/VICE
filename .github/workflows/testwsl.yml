@@ -65,8 +65,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.WF }}
         with:
-          tag_name: r${{ env.revision }}
-          release_name: r${{ env.revision }}
+          tag_name: x${{ env.revision }}
+          release_name: x${{ env.revision }}
           draft: true
           prerelease: true
 
@@ -94,7 +94,7 @@ jobs:
                 owner: context.repo.owner, 
                 repo: context.repo.repo,
                 body: fs.readFileSync('revbody.txt', 'utf8').toString(),
-                release_id: ${{ needs.create_release.outputs.release_id }},
+                release_id: x${{ needs.create_release.outputs.release_id }},
                 draft: false,
                 prerelease: true,
                 release: false
