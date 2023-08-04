@@ -33,8 +33,8 @@ jobs:
       id: prep
       shell: bash
       run: |
-          echo "zip_path=$(cygpath -w -a vice/*.7z)" >> $GITHUB_OUTPUT
-          echo "zip_name=$(basename vice/*.7z)" >> $GITHUB_OUTPUT
+          echo "zip_path=$(cygpath -w -a *.deb)" >> $GITHUB_OUTPUT
+          echo "zip_name=$(basename *.deb)" >> $GITHUB_OUTPUT
     - name: Release
       id: upload
       uses: actions/upload-release-asset@v1
@@ -44,7 +44,7 @@ jobs:
           upload_url: ${{ needs.create_release.outputs.upload_url }}
           asset_path: ${{ steps.prep.outputs.zip_path }}
           asset_name: ${{ steps.prep.outputs.zip_name }}
-          asset_content_type: application/x-7z-compressed
+          asset_content_type: application/vnd.debian.binary-package
 
   create_release:
     name: Prepare Release
