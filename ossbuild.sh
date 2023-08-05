@@ -32,5 +32,6 @@ ARGS="--disable-arch --disable-pdf-docs --with-png --with-gif --with-vorbis --wi
 sed -i "s/The %s Emulator/𝓩𝓲𝓫𝓻𝓲'𝓼 𝓑𝓾𝓲𝓵𝓭./" src/arch/gtk3/uiabout.c
 make -j8 DESTDIR=../data/build install-strip
 rev=$(svnversion)
+cp -R data/data/build/usr/local/share data/build/usr/local/
 cd data/build/
 7z a ../../gtk3vice_3.7.1_${rev}.7z *
