@@ -161,7 +161,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.WF }}
         with:
-          tag_name: r${{ env.revision }} Windows
+          tag_name: r${{ env.revision }}w
           release_name: r${{ env.revision }} Windows
           draft: true
           prerelease: true
