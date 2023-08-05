@@ -65,8 +65,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.WF }}
         with:
-          tag_name: ossr${{ env.revision }}
-          release_name: ossr${{ env.revision }}
+          tag_name: ${{ env.revision }} Ubuntu 22
+          release_name: ossr${{ env.revision }} Ubuntu 22.04
           draft: true
           prerelease: true
 
