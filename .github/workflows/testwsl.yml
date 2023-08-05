@@ -65,7 +65,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.WF }}
         with:
-          tag_name: r${{ env.revision }} Ubuntu 22.04
+          tag_name: r${{ env.revision }}u
           release_name: r${{ env.revision }} Ubuntu 22.04
           draft: true
           prerelease: true
