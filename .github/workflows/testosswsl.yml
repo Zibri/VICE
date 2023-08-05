@@ -44,7 +44,7 @@ jobs:
           upload_url: ${{ needs.create_release.outputs.upload_url }}
           asset_path: ${{ steps.prep.outputs.zip_path }}
           asset_name: ${{ steps.prep.outputs.zip_name }}
-          asset_content_type: application/vnd.debian.binary-package
+          asset_content_type: application/x-7z-compressed
 
   create_release:
     name: Prepare Release
