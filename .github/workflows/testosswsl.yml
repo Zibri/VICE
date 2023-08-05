@@ -27,7 +27,7 @@ jobs:
     - name: Build
       id: build
       shell: cmd
-      run: setupwsl.bat
+      run: osssetup.bat
 
     - name: prepare
       id: prep
