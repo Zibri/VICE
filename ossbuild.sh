@@ -29,7 +29,7 @@ ARGS="--disable-arch --disable-pdf-docs --with-png --with-gif --with-vorbis --wi
 
 ./autogen.sh
 ./configure $ARGS
-sed -i "s/The %s Emulator/ð©ð²ð«ð»ð²'ð¼ ðð¾ð²ðµð­./" src/arch/gtk3/uiabout.c
+sed -i "s/The %s Emulator/𝓩𝓲𝓫𝓻𝓲'𝓼 𝓑𝓾𝓲𝓵𝓭./" src/arch/gtk3/uiabout.c
 make -j8 DESTDIR=../data/build install-strip
 rev=$(svnversion)
 cd data/build/
