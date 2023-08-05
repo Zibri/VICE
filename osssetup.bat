@@ -1,7 +1,7 @@
 @echo off
 wsl --update
 wsl --install -d openSUSE-Tumbleweed -n
-timeout >NUL: 20s openSUSE-Tumbleweed >NUL: run
+"C:\Program Files\Git\usr\bin\timeout.exe" >NUL: 20s openSUSE-Tumbleweed >NUL: run
 wsl zypper refresh
 cd %GITHUB_WORKSPACE%
 wsl --user root -e ls -al
