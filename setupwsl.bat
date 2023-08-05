@@ -1,7 +1,9 @@
 @echo off
 wsl --update
-wsl --install -d ubuntu -n
-ubuntu install --root
+#wsl --install -d ubuntu -n
+#ubuntu install --root
+wsl --install Ubuntu-20.04 -n
+ubuntu2004 install --root
 wsl --user root -e apt update
 wsl --user root -e apt upgrade -y
 cd %GITHUB_WORKSPACE%
