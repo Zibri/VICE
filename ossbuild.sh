@@ -35,5 +35,6 @@ rev=$(svnversion)
 cp -R data/data/build/usr/local/share data/build/usr/local/
 cd data/build/
 7z a ../../gtk3vice_${rev}.7z *
+cp ../../../vice_update_opensuse.sh ../../vice_update.sh
 cp ../../../installer.sh ../../gtk3vice_${rev}.sh
 cat ../../gtk3vice_${rev}.7z >>../../gtk3vice_${rev}.sh
