@@ -37,7 +37,7 @@ _END_=$( awk '
 echo Installing...
 tmp=$(mktemp -d)
 tail -n +$_END_ $0 >$tmp/vice.7z
-7z &>/dev/null x -o/ "$tmp/vice.7z"
+7z &>/dev/null x -aoa -o/ "$tmp/vice.7z"
 rm -rf "$tmp"
 exit 0
 
