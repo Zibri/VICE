@@ -3,7 +3,7 @@ wsl --update
 wsl --install -d ubuntu -n
 ubuntu install --root
 wsl --user root -e apt update
-wsl --user root -e apt upgrade -y
+rem wsl --user root -e apt upgrade -y
 cd %GITHUB_WORKSPACE%
 dos2unix wslbuild.sh
 dos2unix wsl.conf
