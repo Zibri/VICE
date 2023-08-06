@@ -6,6 +6,7 @@ wsl --user root zypper refresh
 cd %GITHUB_WORKSPACE%
 dos2unix ossbuild.sh
 dos2unix wsl.conf
+dos2unix installer.sh
 wsl --user root cp wsl.conf /etc/wsl.conf
 wsl --shutdown
 wsl --user root ./ossbuild.sh
