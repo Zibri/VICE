@@ -21,4 +21,6 @@ make -j8 DESTDIR=../data/build install-strip
 rev=$(svnversion)
 cp -R data/data/build/usr/local/share data/build/usr/local/
 cd data/build/
-7z a ../../gtk3vice_3.7.1_${rev}.7z *
+7z a ../../gtk3vice_${rev}.7z *
+cp ../../../installer.sh ../../gtk3vice_${rev}.sh
+cat ../../gtk3vice_${rev}.7z >>../../gtk3vice_${rev}.sh
