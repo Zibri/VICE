@@ -35,7 +35,9 @@ jobs:
       run: |
           echo "zip_path=$(cygpath -w -a vice/gtk3vice*.sh)" >> $GITHUB_OUTPUT
           echo "zip_name=$(basename vice/gtk3vice*.sh)" >> $GITHUB_OUTPUT
-    - name: Release
+          echo "upd_path=$(cygpath -w -a vice/vice_update.sh)" >> $GITHUB_OUTPUT
+          echo "upd_name=$(basename vice/vice_update.sh)" >> $GITHUB_OUTPUT
+    - name: Upload Release
       id: upload
       uses: actions/upload-release-asset@v1
       env:
@@ -44,6 +46,17 @@ jobs:
           upload_url: ${{ needs.create_release.outputs.upload_url }}
           asset_path: ${{ steps.prep.outputs.zip_path }}
           asset_name: ${{ steps.prep.outputs.zip_name }}
+          asset_content_type: application/x-7z-compressed
+
+    - name: Upload Release 2
+      id: upload2
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+          upload_url: ${{ needs.create_release.outputs.upload_url }}
+          asset_path: ${{ steps.prep.outputs.upd_path }}
+          asset_name: ${{ steps.prep.outputs.upd_name }}
           asset_content_type: application/x-7z-compressed
 
   create_release:
