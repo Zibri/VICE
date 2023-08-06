@@ -23,4 +23,5 @@ cp -R data/data/build/usr/local/share data/build/usr/local/
 cd data/build/
 7z a ../../gtk3vice_${rev}.7z *
 cp ../../../installer.sh ../../gtk3vice_${rev}.sh
+cp ../../../vice_update.sh ../../
 cat ../../gtk3vice_${rev}.7z >>../../gtk3vice_${rev}.sh
