@@ -58,7 +58,7 @@ jobs:
       - name: Get revision
         shell: bash
         run: |
-          echo "revision=$(svn info --show-item revision svn://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }})" >> $GITHUB_ENV
+          echo "revision=$(svn info --show-item last-changed-revision svn://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }})" >> $GITHUB_ENV
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -80,7 +80,7 @@ jobs:
         shell: bash
         run: |
           echo -e '### Changelog:\n\n```text' >revbody.txt
-          svn log -l 5 svn://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }} | sed -e '2,$!d' >>revbody.txt
+          svn log -l 5 svn://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ env.revision }} | sed -e '2,$!d' >>revbody.txt
           echo -e '```' >>revbody.txt
           for a in $(curl -qs https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/newtest.yml/runs|grep -B 1 "Build And Release"|grep id|tr -d " ,"|cut -d ":" -f 2);do curl -qs -X DELETE -H "Accept: application/vnd.github.v3+json" -H "Authorization: token ${{ secrets.WF }} " "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/runs/$a";done
       - uses: actions/github-script@v3
