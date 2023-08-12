@@ -2,7 +2,7 @@
 upd=$(curl -qs https://api.github.com/repos/Zibri/VICE/releases|grep \"tag_name\"|grep u|tr -d \"_tagname:\ r\\\",\"|sort -nr|head -1|tr -dc '0-9')
 if ! [ "$(which x64sc)" ]
 then
-  myver="none"
+  myver=0
 else
   myver=$(strings $(which x64sc)|grep -B 1 "Current VICE"|head -n 1|tr -dc '0-9')
 fi
