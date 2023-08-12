@@ -17,6 +17,7 @@ ARGS="--enable-gtk3ui $ARGS"
 ./autogen.sh
 ./configure $ARGS
 sed -i "s/The %s Emulator/𝓩𝓲𝓫𝓻𝓲'𝓼 𝓑𝓾𝓲𝓵𝓭./" src/arch/gtk3/uiabout.c
+sed -i "s/        rotation_1541_simple(dptr);/        rotation_1541_gcr_cycle(dptr);/" src/drive/rotation.c
 make -j8 DESTDIR=../data/build install-strip
 rev=$(svnversion)
 cp -R data/data/build/usr/local/share data/build/usr/local/
