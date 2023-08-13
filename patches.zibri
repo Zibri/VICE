@@ -1,0 +1,246 @@
+Index: src/arch/gtk3/uiabout.c
+===================================================================
+--- src/arch/gtk3/uiabout.c	(revision 44418)
++++ src/arch/gtk3/uiabout.c	(working copy)
+@@ -228,7 +228,7 @@
+             model = "Commodore CBM-II 6x0 and 7x0";
+             break;
+     }
+-    g_snprintf(buffer, sizeof(buffer), "The %s Emulator", model);
++    g_snprintf(buffer, sizeof(buffer), "𝓩𝓲𝓫𝓻𝓲'𝓼 𝓑𝓾𝓲𝓵𝓭.");
+     gtk_about_dialog_set_comments(GTK_ABOUT_DIALOG(about), buffer);
+ 
+     /* set license */
+Index: src/drive/rotation.c
+===================================================================
+--- src/drive/rotation.c	(revision 44418)
++++ src/drive/rotation.c	(working copy)
+@@ -85,11 +85,6 @@
+ 
+ static rotation_t rotation[NUM_DISK_UNITS];
+ 
+-/* Speed (in bps) of the disk in the 4 disk areas.  */
+-static const unsigned int rot_speed_bps[2][4] = { { 250000, 266667, 285714, 307692 },
+-                                                  { 125000, 133333, 142857, 153846 } };
+-
+-
+ void rotation_init(int freq, unsigned int dnr)
+ {
+     rotation[dnr].frequency = freq;
+@@ -569,46 +564,6 @@
+     }
+ }
+ 
+-static void rotation_1541_gcr_cycle(drive_t *dptr)
+-{
+-    rotation_t *rptr = &rotation[dptr->diskunit->mynumber];
+-    CLOCK cpu_cycles;
+-    CLOCK ref_cycles, ref_advance_cycles;
+-    CLOCK one_rotation = rptr->frequency ? 400000 : 200000;
+-
+-    /* cpu cycles since last call */
+-    CLOCK clk = *(dptr->diskunit->clk_ptr);
+-    cpu_cycles = clk - rptr->rotation_last_clk;
+-    rptr->rotation_last_clk = clk;
+-    /* modulo, at least one revolution, but not more than two */
+-    while (cpu_cycles > one_rotation * 2) {
+-        cpu_cycles -= one_rotation;
+-    }
+-
+-    /* Calculate the reference clock cycles from the cpu clock cycles - hw works the other way around...
+-             The reference clock is actually 16MHz, and the cpu clock is the result of dividing that by 16 */
+-    ref_cycles = cpu_cycles << (rptr->frequency ? 3 : 4);
+-
+-    /* add additional R cycles requested; R must be less than a complete C cycle */
+-    ref_advance_cycles = dptr->req_ref_cycles;
+-    dptr->req_ref_cycles = 0;
+-    ref_advance_cycles &= 15;
+-    ref_cycles += ref_advance_cycles;
+-
+-    /* run simulation if at least 1 R cycle has elapsed */
+-    if (ref_cycles > 0) {
+-        if (ref_cycles > rptr->ref_advance) {
+-            /* run simulation without the extra reference cycles already simmulated */
+-            ref_cycles -= rptr->ref_advance;
+-            rptr->ref_advance = ref_advance_cycles;
+-            rotation_1541_gcr(dptr, ref_cycles);
+-        } else {
+-            /* nothing to do as we are ahead of the cpu simulation; update the delay not catched up by the cpu yet */
+-            rptr->ref_advance -= ref_cycles;
+-        }
+-    }
+-}
+-
+ /*******************************************************************************
+  * 1541 circuit simulation for NZRI transition flux pulse-based images (.p64),
+  * see 1541 circuit description in this file for details
+@@ -941,7 +896,7 @@
+     }
+ }
+ 
+-static void rotation_1541_p64_cycle(drive_t *dptr)
++static void rotation_1541_cycle(drive_t *dptr)
+ {
+     rotation_t *rptr = &rotation[dptr->diskunit->mynumber];
+     CLOCK cpu_cycles;
+@@ -963,7 +918,6 @@
+ 
+     /* add additional R cycles requested; R must be less than a complete C cycle */
+     ref_advance_cycles = dptr->req_ref_cycles;
+-
+     dptr->req_ref_cycles = 0;
+     ref_advance_cycles &= 15;
+     ref_cycles += ref_advance_cycles;
+@@ -974,128 +928,17 @@
+             /* run simulation without the extra reference cycles already simmulated */
+             ref_cycles -= rptr->ref_advance;
+             rptr->ref_advance = ref_advance_cycles;
+-            rotation_1541_p64(dptr, ref_cycles);
+-        } else {
+-            /* nothing to do as we are ahead of the cpu simulation; update the delay not catched up by the cpu yet */
+-            rptr->ref_advance -= ref_cycles;
+-        }
+-    }
+-}
+ 
+-/*******************************************************************************
+- * very simple and fast emulation for perfect images like those coming from
+- * dxx files
+- ******************************************************************************/
+-static void rotation_1541_simple(drive_t *dptr)
+-{
+-    rotation_t *rptr;
+-    CLOCK delta;
+-    CLOCK tdelta;
+-    int bits_moved = 0;
+-    uint64_t tmp = 1000000UL;
+-    unsigned long rpmscale;
+-
+-    dptr->req_ref_cycles = 0;
+-
+-    rptr = &rotation[dptr->diskunit->mynumber];
+-
+-    /* Calculate the number of bits that have passed under the R/W head since
+-       the last time.  */
+-    CLOCK clk = *(dptr->diskunit->clk_ptr);
+-    delta = clk - rptr->rotation_last_clk;
+-    rptr->rotation_last_clk = clk;
+-
+-    tmp += ((long)dptr->wobble_factor * 1000000L) / 3200000L;
+-    tmp *= 30000UL;
+-    tmp /= dptr->rpm;
+-    rpmscale = (unsigned long)(tmp);
+-
+-    while (delta > 0) {
+-        tdelta = delta > 1000 ? 1000 : delta;
+-        delta -= tdelta;
+-        rptr->accum += rot_speed_bps[rptr->frequency][rptr->speed_zone] * tdelta;
+-        bits_moved += rptr->accum / rpmscale;
+-        rptr->accum %= rpmscale;
++    if (dptr->P64_image_loaded) {
++        rotation_1541_p64(dptr, ref_cycles);
++    } else {
++        rotation_1541_gcr(dptr, ref_cycles);
+     }
+ 
+-    if (dptr->read_write_mode) {
+-        int off = dptr->GCR_head_offset;
+-        unsigned int byte, last_read_data = rptr->last_read_data << 7;
+-        unsigned int bit_counter = rptr->bit_counter;
+-
+-        /* if no image is attached or track does not exists, read 0 */
+-        if (dptr->GCR_image_loaded == 0 || dptr->GCR_track_start_ptr == NULL) {
+-            byte = 0;
+         } else {
+-            byte = dptr->GCR_track_start_ptr[off >> 3] << (off & 7);
++            /* nothing to do as we are ahead of the cpu simulation; update the delay not catched up by the cpu yet */
++            rptr->ref_advance -= ref_cycles;
+         }
+-
+-        while (bits_moved-- != 0) {
+-            byte <<= 1; off++;
+-            if (!(off & 7)) {
+-                if ((off >> 3) >= (int)dptr->GCR_current_track_size) {
+-                    off = 0;
+-                }
+-                /* if no image is attached or track does not exists, read 0 */
+-                if (dptr->GCR_image_loaded == 0 || dptr->GCR_track_start_ptr == NULL) {
+-                    byte = 0;
+-                } else {
+-                    byte = dptr->GCR_track_start_ptr[off >> 3];
+-                }
+-            }
+-
+-            last_read_data <<= 1;
+-            last_read_data |= byte & 0x80;
+-            rptr->last_write_data <<= 1;
+-
+-            /* is sync? reset bit counter, don't move data, etc. */
+-            if (~last_read_data & 0x1ff80) {
+-                if (++bit_counter == 8) {
+-                    bit_counter = 0;
+-                    dptr->GCR_read = (uint8_t) (last_read_data >> 7);
+-                    /* tlr claims that the write register is loaded at every
+-                     * byte boundary, and since the bus is shared, it's reasonable
+-                     * to guess that it would be loaded with whatever was last read. */
+-                    rptr->last_write_data = dptr->GCR_read;
+-                    if ((dptr->byte_ready_active & BRA_BYTE_READY) != 0) {
+-                        dptr->byte_ready_edge = 1;
+-                        dptr->byte_ready_level = 1;
+-                    }
+-                }
+-            } else {
+-                bit_counter = 0;
+-            }
+-        }
+-        rptr->last_read_data = (last_read_data >> 7) & 0x3ff;
+-        rptr->bit_counter = bit_counter;
+-        dptr->GCR_head_offset = off;
+-        if (!dptr->GCR_read) {    /* can only happen if on a half or unformatted track */
+-            dptr->GCR_read = 0x11; /* should be good enough, there's no data after all */
+-        }
+-    } else {
+-        /* When writing, the first byte after transition is going to echo the
+-         * bits from the last read value.
+-         */
+-        while (bits_moved-- != 0) {
+-            rptr->last_read_data = (rptr->last_read_data << 1) & 0x3fe;
+-            if ((rptr->last_read_data & 0xf) == 0) {
+-                rptr->last_read_data |= 1;
+-            }
+-
+-            write_next_bit(dptr, rptr->last_write_data & 0x80);
+-            rptr->last_write_data <<= 1;
+-
+-            if (++rptr->bit_counter == 8) {
+-                rptr->bit_counter = 0;
+-                rptr->last_write_data = dptr->GCR_write_value;
+-                if ((dptr->byte_ready_active & BRA_BYTE_READY) != 0) {
+-                    dptr->byte_ready_edge = 1;
+-                    dptr->byte_ready_level = 1;
+-                }
+-            }
+-        }
+-        /* TODO: only if we introduced more than two 0 bits in a row */
+-        dptr->complicated_image_loaded = 1;
+     }
+ }
+ 
+@@ -1112,16 +955,7 @@
+ 
+     rotation_do_wobble(dptr);
+ 
+-    if (dptr->complicated_image_loaded) {
+-        /* stuff that needs complex and slow emulation */
+-        if (dptr->P64_image_loaded) {
+-            rotation_1541_p64_cycle(dptr);
+-        } else {
+-            rotation_1541_gcr_cycle(dptr);
+-        }
+-    } else {
+-        rotation_1541_simple(dptr);
+-    }
++    rotation_1541_cycle(dptr);
+ }
+ 
+ /******************************************************************************/
