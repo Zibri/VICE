@@ -11,3 +11,9 @@ How about a small donation?
 
 openSUSE TumbleWeed Version  
 [![Build And Release on openSUSE WSL](https://github.com/Zibri/VICE/actions/workflows/testosswsl.yml/badge.svg)](https://github.com/Zibri/VICE/actions/workflows/testosswsl.yml)
+
+Ubuntu 22.04 Version  
+[![Build And Release on openSUSE WSL](https://github.com/Zibri/VICE/actions/workflows/testwsl.yml/badge.svg)](https://github.com/Zibri/VICE/actions/workflows/testwsl.yml)
+
+Windows Version  
+[![Build And Release on openSUSE WSL](https://github.com/Zibri/VICE/actions/workflows/newtest.yml/badge.svg)](https://github.com/Zibri/VICE/actions/workflows/newtest.yml)
