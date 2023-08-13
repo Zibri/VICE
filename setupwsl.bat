@@ -9,6 +9,7 @@ dos2unix wslbuild.sh
 dos2unix wsl.conf
 dos2unix installer.sh
 dos2unix vice_update.sh
+dos2unix patches.zibri
 wsl --user root cp wsl.conf /etc/wsl.conf
 wsl --shutdown
 wsl --user root ./wslbuild.sh
