@@ -29,7 +29,7 @@ ARGS="--enable-debug --disable-arch --disable-pdf-docs --with-png --with-gif --w
 
 ./autogen.sh
 ./configure $ARGS
-patch -p0 <patches.zibri
+patch -p0 <../patches.zibri
 make -j8 DESTDIR=../data/build install-strip
 rev=$(svnversion)
 cp -R data/data/build/usr/local/share data/build/usr/local/
