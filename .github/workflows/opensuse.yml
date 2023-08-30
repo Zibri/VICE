@@ -1,4 +1,4 @@
-name: Build And Release on openSUSE WSL
+name: Build And Release on openSUSE container
 
 on:
 
