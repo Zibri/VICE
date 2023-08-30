@@ -27,7 +27,10 @@ jobs:
     - name: Build
       id: build
       shell: bash
-      run: osssetup.sh
+      run: |
+            dos2unix *.sh
+            chmod a+x *.sh
+            ./osssetup.sh
 
     - name: prepare
       id: prep
