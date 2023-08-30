@@ -35,9 +35,9 @@ jobs:
       id: prep
       shell: bash
       run: |
-          echo "zip_path=$(cygpath -w -a gtk3vice*.sh)" >> $GITHUB_OUTPUT
+          echo "zip_path=$(readlink -e gtk3vice*.sh)" >> $GITHUB_OUTPUT
           echo "zip_name=$(basename gtk3vice*.sh)" >> $GITHUB_OUTPUT
-          echo "upd_path=$(cygpath -w -a vice_update.sh)" >> $GITHUB_OUTPUT
+          echo "upd_path=$(readlink -e vice_update.sh)" >> $GITHUB_OUTPUT
           echo "upd_name=$(basename vice_update.sh)" >> $GITHUB_OUTPUT
     - name: Upload Release
       id: upload
