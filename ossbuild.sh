@@ -8,6 +8,9 @@ sudo update-alternatives --set fakeroot /usr/bin/fakeroot-tcp
 
 cd /t
 
+dos2unix *.sh
+chmod a+x *.sh
+
 if [ ! -e /usr/local/bin/xa65 ]
 then
   XA_VERSION=$(wget --tries=1 -O - https://www.floodgap.com/retrotech/xa/dists/ 2>/dev/null | grep '"xa-[^"]*gz"' | sed -e 's,.*xa-,,' -e 's,.tar.gz.*,,' | sort -V | tail -n1)
