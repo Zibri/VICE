@@ -1,0 +1,115 @@
+name: Build And Release on openSUSE WSL
+
+on:
+
+  workflow_dispatch:
+    inputs:
+      revision:
+        description: 'Revision'
+        required: false
+        default: ''
+        
+  repository_dispatch:
+    inputs:
+      revision:
+        description: 'Revision'
+        required: false
+        default: ''
+
+jobs:
+  build:
+    name: Build
+    needs: create_release
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build
+      id: build
+      shell: bash
+      run: osssetup.sh
+
+    - name: prepare
+      id: prep
+      shell: bash
+      run: |
+          echo "zip_path=$(cygpath -w -a gtk3vice*.sh)" >> $GITHUB_OUTPUT
+          echo "zip_name=$(basename gtk3vice*.sh)" >> $GITHUB_OUTPUT
+          echo "upd_path=$(cygpath -w -a vice_update.sh)" >> $GITHUB_OUTPUT
+          echo "upd_name=$(basename vice_update.sh)" >> $GITHUB_OUTPUT
+    - name: Upload Release
+      id: upload
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+          upload_url: ${{ needs.create_release.outputs.upload_url }}
+          asset_path: ${{ steps.prep.outputs.zip_path }}
+          asset_name: ${{ steps.prep.outputs.zip_name }}
+          asset_content_type: application/x-7z-compressed
+
+    - name: Upload Release 2
+      id: upload2
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+          upload_url: ${{ needs.create_release.outputs.upload_url }}
+          asset_path: ${{ steps.prep.outputs.upd_path }}
+          asset_name: ${{ steps.prep.outputs.upd_name }}
+          asset_content_type: application/x-7z-compressed
+
+  create_release:
+    name: Prepare Release
+    runs-on: windows-latest
+
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+      release_id: ${{ steps.create_release.outputs.id }}
+    steps:
+
+      - name: Get revision
+        shell: bash
+        run: |
+          echo "revision=$(svn info --show-item last-changed-revision svn://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }})" >> $GITHUB_ENV
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.WF }}
+        with:
+          tag_name: r${{ env.revision }}o
+          release_name: r${{ env.revision }} OpenSUSE TumbleWeed
+          draft: true
+          prerelease: true
+
+  publish_release:
+    name: Publish Release
+    needs: [create_release, build]
+    runs-on: windows-latest
+    
+    steps:
+      - name: Get revision
+        shell: bash
+        run: |
+          echo -e '### Changelog:\n\n```text' >revbody.txt
+          svn log -l 5 svn://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ env.revision }} | sed -e '2,$!d' >>revbody.txt
+          echo -e '```' >>revbody.txt
+          for a in $(curl -qs https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/testosswsl.yml/runs|grep -B 1 "Build And Release"|grep id|tr -d " ,"|cut -d ":" -f 2);do curl -qs -X DELETE -H "Accept: application/vnd.github.v3+json" -H "Authorization: token ${{ secrets.WF }} " "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/runs/$a";done
+      - uses: actions/github-script@v3
+                 
+        with:
+          github-token: ${{secrets.WF}} # ${{secrets.GITHUB_TOKEN}}
+          script: |
+            fs=require("fs");
+            github.repos.updateRelease(
+              {
+                owner: context.repo.owner, 
+                repo: context.repo.repo,
+                body: fs.readFileSync('revbody.txt', 'utf8').toString(),
+                release_id: ${{ needs.create_release.outputs.release_id }},
+                draft: false,
+                prerelease: false,
+                release: true
+              });
+              
