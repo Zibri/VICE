@@ -24,10 +24,10 @@ jobs:
           "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/newtest.yml/dispatches";
           curl -v -X POST -d '{"ref":"main"}' -H "Accept: application/vnd.github.v3+json" \
           -H "Authorization: token ${{ secrets.WF }} " \
-          "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/testosswsl.yml/dispatches";
+          "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/opensuse.yml/dispatches";
           curl -v -X POST -d '{"ref":"main"}' -H "Accept: application/vnd.github.v3+json" \
           -H "Authorization: token ${{ secrets.WF }} " \
-          "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/testwsl.yml/dispatches"
+          "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/ubuntu.yml/dispatches"
           ) || exit 0 && (
           echo "New revision $revision on SVN!"
           sleep 60
