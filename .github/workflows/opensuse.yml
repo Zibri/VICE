@@ -28,7 +28,6 @@ jobs:
       id: build
       shell: bash
       run: |
-            dos2unix *.sh
             chmod a+x *.sh
             ./osssetup.sh
 
