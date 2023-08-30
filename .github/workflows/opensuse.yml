@@ -63,7 +63,7 @@ jobs:
 
   create_release:
     name: Prepare Release
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     outputs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
@@ -88,7 +88,7 @@ jobs:
   publish_release:
     name: Publish Release
     needs: [create_release, build]
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     
     steps:
       - name: Get revision
