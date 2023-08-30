@@ -1,4 +1,4 @@
-name: Build And Release on openSUSE container
+name: Build And Release on Ubuntu.
 
 on:
 
