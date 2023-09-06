@@ -16,5 +16,5 @@ then
   sudo /tmp/viceup.sh -u
   sudo /tmp/viceup.sh
 else
-  echo No new version.
+  echo "You have the latest version ($myver)."
 fi
