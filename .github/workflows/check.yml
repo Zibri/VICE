@@ -21,7 +21,7 @@ jobs:
           ( curl -qs "https://github.com/$GITHUB_REPOSITORY/tags"|grep "class.*releases/tag/"|grep -q $revision ) && exit 0 || (
           ( curl -v -X POST -d '{"ref":"main"}' -H "Accept: application/vnd.github.v3+json" \
           -H "Authorization: token ${{ secrets.WF }} " \
-          "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/newtest.yml/dispatches";
+          "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/main.yml/dispatches";
           curl -v -X POST -d '{"ref":"main"}' -H "Accept: application/vnd.github.v3+json" \
           -H "Authorization: token ${{ secrets.WF }} " \
           "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/opensuse.yml/dispatches";
