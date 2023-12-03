@@ -31,4 +31,4 @@ ARGS="--enable-gtk3ui $ARGS"
 ./autogen.sh
 ./configure $ARGS
 patch -p0 <~/patches.zibri
-make -j8 && make bindist7zip 
+#make -j8 && make bindist7zip 
