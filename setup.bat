@@ -9,3 +9,4 @@ dos2unix my_build.sh
 copy vice.sh c:\users\runneradmin\
 copy patches.zibri c:\users\runneradmin\
 c:\msysz\usr\bin\bash.exe --login /c/users/runneradmin/vice.sh
+c:\msysz\usr\bin\bash.exe --login -c "cd $GITHUB_WORKSPACE/vice;make -j8 && make bindist7zip"
