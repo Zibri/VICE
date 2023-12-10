@@ -1,4 +1,4 @@
-name: Build And Release
+name: Build And Release on Windows
 
 on:
 
