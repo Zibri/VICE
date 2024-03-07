@@ -2,7 +2,7 @@
 
 zypper refresh
 zypper -n in -t pattern devel_basis devel_C_C++
-zypper -n in 7zip file wget curl dos2unix fakeroot subversion gtk3-devel glew-devel libcurl-devel ffmpeg-4-libavcodec-devel ffmpeg-4-libavfilter-devel ffmpeg-4-libavformat-devel ffmpeg-4-libavresample-devel libpulse-devel alsa-devel libvorbis-devel flac-devel giflib-devel
+zypper -n in 7zip file wget curl dos2unix fakeroot subversion gtk3-devel glew-devel libcurl-devel ffmpeg-4-libavcodec-devel ffmpeg-4-libavfilter-devel ffmpeg-4-libavformat-devel ffmpeg-4-libavresample-devel libpulse-devel alsa-devel libvorbis-devel flac-devel giflib-devel libevdev-devel
 zypper -n addrepo https://download.opensuse.org/repositories/home:strik/openSUSE_Factory/home:strik.repo
 zypper -n --gpg-auto-import-keys refresh
 zypper -n install xa65
