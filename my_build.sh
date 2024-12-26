@@ -11,32 +11,34 @@ cd "$(dirname $0)"/../..
 # https://www.floodgap.com/retrotech/xa/dists/ to see why
 #
 
-XA_VERSION=$(wget --tries=1 -O - https://www.floodgap.com/retrotech/xa/dists/ 2>/dev/null | grep '"xa-[^"]*gz"' | sed -e 's,.*xa-,,' -e 's,.tar.gz.*,,' | sort -V | tail -n1)
+#XA_VERSION=$(wget --tries=1 -O - https://www.floodgap.com/retrotech/xa/dists/ 2>/dev/null | grep '"xa-[^"]*gz"' | sed -e 's,.*xa-,,' -e 's,.tar.gz.*,,' | sort -V | tail -n1)
 
-if [ ! -e /usr/local/bin/xa65.exe ]
-then
-    pushd /usr/local
-    mkdir -p src
-    cd src
-    wget https://www.floodgap.com/retrotech/xa/dists/xa-${XA_VERSION}.tar.gz
-    tar -xzf xa-${XA_VERSION}.tar.gz
-    cd xa-${XA_VERSION}
-    make mingw install
-    cp /usr/local/bin/xa.exe /usr/local/bin/xa65.exe
-    popd
-fi
+#if [ ! -e /usr/local/bin/xa65.exe ]
+#then
+#    pushd /usr/local
+#    mkdir -p src
+#    cd src
+#    wget https://www.floodgap.com/retrotech/xa/dists/xa-${XA_VERSION}.tar.gz
+#    tar -xzf xa-${XA_VERSION}.tar.gz
+#    cd xa-${XA_VERSION}
+#    make mingw install
+#    cp /usr/local/bin/xa.exe /usr/local/bin/xa65.exe
+#    popd
+#fi
 
-if [ ! -f mingw-w64-x86_64-ffmpeg-4.4.3-6-any.pkg.tar.zst ]
-then
-wget https://mirror.cs.jmu.edu/pub/msys2/mingw/mingw64/mingw-w64-x86_64-ffmpeg-4.4.3-6-any.pkg.tar.zst
-fi
+#if [ ! -f mingw-w64-x86_64-ffmpeg-4.4.3-6-any.pkg.tar.zst ]
+#then
+#wget https://mirror.cs.jmu.edu/pub/msys2/mingw/mingw64/mingw-w64-x86_64-ffmpeg-4.4.3-6-any.pkg.tar.zst
+#fi
 
-if [ ! -f mingw-w64-x86_64-celt-0.11.3-5-any.pkg.tar.zst ]
-then
-wget https://mirror.cs.jmu.edu/pub/msys2/mingw/mingw64/mingw-w64-x86_64-celt-0.11.3-5-any.pkg.tar.zst
-fi
+#if [ ! -f mingw-w64-x86_64-celt-0.11.3-5-any.pkg.tar.zst ]
+#then
+#wget https://mirror.cs.jmu.edu/pub/msys2/mingw/mingw64/mingw-w64-x86_64-celt-0.11.3-5-any.pkg.tar.zst
+#fi
 
-pacman -U --noconfirm mingw-w64-x86_64-ffmpeg-4.4.3-6-any.pkg.tar.zst mingw-w64-x86_64-celt-0.11.3-5-any.pkg.tar.zst
+#pacman -U --noconfirm mingw-w64-x86_64-ffmpeg-4.4.3-6-any.pkg.tar.zst mingw-w64-x86_64-celt-0.11.3-5-any.pkg.tar.zst
+
+pacman -Sy mingw-w64-x86_64-ffmpeg-4.4 mingw-w64-x86_64-xa65
 
 ARGS="--disable-arch --disable-pdf-docs --with-png --with-gif --with-vorbis --with-flac --enable-ethernet --enable-midi --enable-cpuhistory --enable-platformdox --enable-html-docs --enable-rs232 --enable-new8580filter --with-resid --enable-x64 --enable-x64-image --enable-realdevice --enable-ffmpeg"
 case "$1" in
