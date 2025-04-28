@@ -23,7 +23,7 @@ cd vice
 ARGS="--enable-debug --disable-arch --disable-pdf-docs --with-png --with-gif --with-vorbis --with-flac --enable-ethernet --enable-midi --enable-cpuhistory --enable-platformdox --enable-rs232 --enable-new8580filter --with-resid --enable-x64 --enable-x64-image --enable-realdevice --enable-ffmpeg --enable-gtk3ui"
 
 ./autogen.sh
-./configure $ARGS
+LIBS="-lGL" ./configure $ARGS
 patch -p0 <../patches.zibri
 make -j8 DESTDIR=../data/build install-strip
 rev=$(svnversion)
