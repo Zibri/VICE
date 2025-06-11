@@ -32,6 +32,13 @@ cd vice
 ARGS="--disable-arch --disable-pdf-docs --with-png --with-gif --with-vorbis --with-flac --enable-ethernet --enable-midi --enable-cpuhistory --enable-platformdox --enable-html-docs --enable-rs232 --enable-new8580filter --with-resid --enable-x64 --enable-x64-image --enable-realdevice --enable-ffmpeg"
 ARGS="--enable-gtk3ui $ARGS"
 
+    echo "--- Debugging vice.sh ---"
+    echo "Current MSYSTEM: $MSYSTEM"
+    echo "Current PATH: $PATH"
+    which cc
+    which gcc
+    echo "--- End Debugging ---"
+    
 ./autogen.sh
 ./configure $ARGS
 patch -p0 <~/patches.zibri
