@@ -8,5 +8,6 @@ dos2unix vice.sh
 dos2unix my_build.sh
 copy vice.sh c:\users\runneradmin\
 copy patches.zibri c:\users\runneradmin\
+c:\msysz\usr\bin\bash.exe --login -c "pacman -Sy --noconfirm mingw-w64-x86_64-gcc mingw-w64-x86_64-binutils mingw-w64-x86_64-crt-git mingw-w64-x86_64-headers-git mingw-w64-x86_64-winpthreads-git mingw-w64-x86_64-gcc-libs"
 c:\msysz\usr\bin\bash.exe --login /c/users/runneradmin/vice.sh
 c:\msysz\usr\bin\bash.exe --login -c "export USE_SVN_REVISION=1;cd $GITHUB_WORKSPACE/vice;make -j8 && make bindist7zip"
