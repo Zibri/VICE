@@ -37,8 +37,9 @@ ARGS="--enable-gtk3ui $ARGS"
     echo "Current PATH: $PATH"
     which cc
     which gcc
+    echo contents of config.log
+    cat $GITHUB_WORKSPACE/vice/config.log
     echo "--- End Debugging ---"
-    
 ./autogen.sh
 ./configure $ARGS
 patch -p0 <~/patches.zibri
