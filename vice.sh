@@ -23,6 +23,8 @@ export "PKG_CONFIG_PATH=/mingw64/lib/ffmpeg4.4/pkgconfig:$PKG_CONFIG_PATH"
 #cd ../..
 #rm -rf src
 
+pacman -Sy --noconfirm mingw-w64-x86_64-gcc mingw-w64-x86_64-binutils mingw-w64-x86_64-crt-git mingw-w64-x86_64-headers-git mingw-w64-x86_64-winpthreads-git mingw-w64-x86_64-gcc-libs
+
 svn checkout svn://svn.code.sf.net/p/vice-emu/code/trunk/vice vice
 
 export USE_SVN_REVISION=1
