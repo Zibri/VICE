@@ -31,6 +31,7 @@ jobs:
       id: build
       shell: bash
       run: |
+          choco source add -n chocolatey -s 'https://chocolatey.org/api/v2/'
           choco install subversion
           nice -n -20 node -e 'const{spawn:spawn}=require("child_process"),bat=spawn("cmd.exe",["/c","setup.bat"]);bat.stdout.on("data",function(t){process.stdout.write(t)}),bat.stderr.on("data",function(t){process.stderr.write(t)});'
           echo "zip_path=$(cygpath -w -a vice/*.7z)" >> $GITHUB_OUTPUT
@@ -58,6 +59,7 @@ jobs:
       - name: Get revision
         shell: bash
         run: |
+          choco source add -n chocolatey -s 'https://chocolatey.org/api/v2/'
           choco install subversion
           echo "revision=$(svn info --show-item last-changed-revision svn://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }})" >> $GITHUB_ENV
           echo -e '### Changelog:\n\n```text' >revbody.txt
