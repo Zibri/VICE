@@ -57,6 +57,7 @@ jobs:
       - name: Get revision
         shell: bash
         run: |
+          sudo apt-get update && sudo apt-get install -y subversion
           echo "revision=$(svn info --show-item last-changed-revision svn://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ github.event.inputs.revision }})" >> $GITHUB_ENV
       - name: Create Release
         id: create_release
@@ -78,6 +79,7 @@ jobs:
       - name: Get revision
         shell: bash
         run: |
+          sudo apt-get update && sudo apt-get install -y subversion
           echo -e '### Changelog:\n\n```text' >revbody.txt
           svn log -l 5 svn://svn.code.sf.net/p/vice-emu/code/trunk/vice@${{ env.revision }} | sed -e '2,$!d' >>revbody.txt
           echo -e '```' >>revbody.txt
