@@ -55,6 +55,9 @@ jobs:
       release_id: ${{ steps.create_release.outputs.id }}
     steps:
 
+      - name: Install SVN
+        run: choco install svn -y
+        shell: bash
       - name: Get revision
         shell: bash
         run: |
