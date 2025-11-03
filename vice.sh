@@ -24,5 +24,5 @@ ARGS="--enable-gtk3ui $ARGS"
     echo "--- End Debugging ---"
 ./autogen.sh
 ./configure $ARGS
-patch -p0 <patches.zibri
+patch -p0 <../patches.zibri
 make -j8 && make bindist7zip 
